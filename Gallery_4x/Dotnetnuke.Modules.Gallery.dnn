@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<dotnetnuke version="3.0" type="Module">
+  <folders>
+    <folder>
+      <name>Gallery</name>
+      <friendlyname>Gallery</friendlyname>
+      <foldername>Gallery</foldername>
+      <modulename>DNN_Gallery</modulename>
+      <description>The Media Gallery Module stores and displays a collection of items organized in albums.</description>
+      <version>04.03.00</version>
+      <businesscontrollerclass>DotNetNuke.Modules.Gallery.Controller, DotNetNuke.Modules.Gallery</businesscontrollerclass>
+	  <compatibleversions>^[0]?[4-9]{1}\.[0-9]{1}[9]{1}\.[0-9]{1}[3-9]{1}$</compatibleversions>
+	  <resourcefile>Resources.zip</resourcefile>    
+      <modules>
+        <module>
+          <friendlyname>Gallery</friendlyname>
+          <cachetime>0</cachetime>
+          <controls>
+            <control>
+              <title>Gallery</title>
+              <src>DesktopModules/Gallery/Container.ascx</src>
+              <type>View</type>
+            </control>
+            <control>
+              <key>AlbumEdit</key>
+              <title>Edit Album</title>
+              <src>DesktopModules/Gallery/AlbumEdit.ascx</src>
+              <type>Edit</type>
+            </control>
+            <control>
+              <key>Configuration</key>
+              <title>Gallery Settings</title>
+              <src>DesktopModules/Gallery/Settings.ascx</src>
+              <type>Admin</type>
+            </control>
+            <control>
+              <key>Exif</key>
+              <title>Exif</title>
+              <src>DesktopModules/Gallery/ExifMetaData.ascx</src>
+              <type>View</type>
+            </control>
+            <control>
+              <key>FileEdit</key>
+              <title>Edit File</title>
+              <src>DesktopModules/Gallery/FileEdit.ascx</src>
+              <type>Edit</type>
+            </control>
+            <control>
+              <key>FlashPlayer</key>
+              <title>FlashPlayer</title>
+              <src>DesktopModules/Gallery/FlashPlayer.ascx</src>
+              <type>View</type>
+            </control>
+            <control>
+              <key>Maintenance</key>
+              <title>Maintenance</title>
+              <src>DesktopModules/Gallery/Maintenance.ascx</src>
+              <type>Edit</type>
+            </control>
+            <control>
+              <key>MediaPlayer</key>
+              <title>MediaPlayer</title>
+              <src>DesktopModules/Gallery/MediaPlayer.ascx</src>
+              <type>View</type>
+            </control>
+            <control>
+              <key>Slideshow</key>
+              <title>Slideshow</title>
+              <src>DesktopModules/Gallery/Slideshow.ascx</src>
+              <type>View</type>
+            </control>
+            <control>
+              <key>Viewer</key>
+              <title>Gallery Viewer</title>
+              <src>DesktopModules/Gallery/Viewer.ascx</src>
+              <type>View</type>
+            </control>
+            <control>
+              <key>Voting</key>
+              <title>Rating</title>
+              <src>DesktopModules/Gallery/Voting.ascx</src>
+              <type>View</type>
+            </control>
+          </controls>
+        </module>
+      </modules>
+      <files>
+		<file>
+			<name>Dotnetnuke.Modules.Gallery.dll</name>			
+		</file>
+		<file>
+          <name>Gallery.Exif.dll</name>
+        </file>
+		<file>
+		  <path>Providers\DataProviders\SqlDataProvider</path>
+		  <name>04.03.00.SqlDataProvider</name>
+		</file>
+		<file>
+		  <name>04.03.00.txt</name>
+		</file>
+	  </files>
+    </folder>
+  </folders>
+</dotnetnuke>

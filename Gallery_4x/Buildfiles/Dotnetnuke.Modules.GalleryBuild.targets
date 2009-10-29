@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- UNLOAD AND RELOAD THE PROJECT FILE FOR CHANGES TO TAKE EFFECT -->
+    <PropertyGroup>
+      <ProductName>$(AssemblyName)</ProductName>
+      <ModulesSourcePath>$(MSBuildProjectDirectory)\..\..\..\_modules</ModulesSourcePath>
+      <ModuleGroup>DNN</ModuleGroup>
+      <ModuleRootDir>$(MSBuildProjectDirectory)\..</ModuleRootDir>
+      <PackageDir>$(MSBuildProjectDirectory)\..\..\..\_packages\$(ModuleGroup)\$(ProductName)</PackageDir>
+    </PropertyGroup>
+    <PropertyGroup>
+      <WebsitesPath>$(MSBuildProjectDirectory)\..\..\..\</WebsitesPath>
+      <DNNBase>493i</DNNBase>
+      <WebSiteDir>$(WebsitesPath)$(DNNBase)</WebSiteDir>
+    </PropertyGroup>
+    <ItemGroup>
+        <AssemblyInfoFiles Include="$(MSBuildProjectDirectory)\My Project\AssemblyInfo.vb" />
+        <dnnFile Include="$(MSBuildProjectDirectory)\$(ProductName).dnn" />
+    </ItemGroup>
+
+    <Target Name="BeforeBuild">
+        <CallTarget Targets="SetAssemblyAndManifestVersionInfo" />
+    </Target>
+    <Target Name="AfterBuild">
+        <CallTarget Targets="DeployFiles" />
+    </Target>
+  
+    <Target Name="SetAssemblyAndManifestVersionInfo">
+        <!-- Obtain Version information from version.txt -->
+      <Version BuildType="None" RevisionType="BuildIncrement" VersionFile="version.txt" StartDate="04/17/2009">
+            <Output TaskParameter="Major" PropertyName="Major" />
+            <Output TaskParameter="Minor" PropertyName="Minor" />
+            <Output TaskParameter="Build" PropertyName="Build" />
+            <Output TaskParameter="Revision" PropertyName="Revision" />
+      </Version>
+      <!-- DNN requires single digits to be prefixed with a zero. See Jon Henning blog entry -->
+      <CreateProperty Value="0$(Major)" Condition="$(Major) &lt;= 9" >
+            <Output TaskParameter="Value" PropertyName="Major" />
+      </CreateProperty>
+      <CreateProperty Value="0$(Minor)" Condition="$(Minor) &lt;= 9" >
+            <Output TaskParameter="Value" PropertyName="Minor" />
+      </CreateProperty>
+      <CreateProperty Value="0$(Build)" Condition="$(Build) &lt;= 9" >
+            <Output TaskParameter="Value" PropertyName="Build" />
+      </CreateProperty>
+      <CreateProperty Value="0$(Revision)" Condition="$(Revision) &lt;= 9" >
+            <Output TaskParameter="Value" PropertyName="Revision" />
+      </CreateProperty>
+      <PropertyGroup>
+        <ModuleVersion>$(Major).$(Minor).$(Build).$(Revision)</ModuleVersion>
+        <ModuleVersionNoRevision>$(Major).$(Minor).$(Build)</ModuleVersionNoRevision>
+      </PropertyGroup>
+        <!-- Write new version to assemblyinfo.vb -->
+        <FileUpdate Files="@(AssemblyInfoFiles)" Encoding="ASCII" Regex="AssemblyVersion\(&quot;.*&quot;\)\&gt;" ReplacementText="AssemblyVersion(&quot;$(ModuleVersion)&quot;)&gt;" />
+        <!-- Write new version and revision(Description field) to dnn.version property -->
+        <FileUpdate Files="@(dnnFile)" Regex="version&gt;.*" ReplacementText="version&gt;$(ModuleVersionNoRevision)&lt;/version&gt;" />
+        <!-- <FileUpdate Files="@(dnnFile)" Regex="Revision =.*" ReplacementText="Revision = $(Revision)&lt;/description&gt;" /> -->
+    </Target>
+
+    <Target Name="DeployFiles" Condition="$(PackageDir) != ''" >
+        <CallTarget Targets="ZipFiles" Condition=" '$(Configuration)' == 'Release' "/>
+        <CallTarget Targets="CopyFilesToWebSite" />
+    </Target>
+
+  <Target Name="ZipFiles">
+        <!-- General Exclusions file list -->
+        <CreateItem Include="**\obj\**;
+                             **\*.user;
+                             **\*.suo;
+                             **\*.zip;
+                             **\*.pdb;
+                             **\_sgbak\**\*.*;
+                             **\*.tmp;
+                             **\bin\*.*">
+            <Output TaskParameter="Include" ItemName="DefaultExclude" />
+        </CreateItem>
+
+        <!-- INSTALL EXCLUSIONS-->
+        <!-- Lists of files EXCLUDED files from the Resources Zip-->
+
+        <CreateItem Include="**\bin\*.*;
+                             **\Buildfiles\*.*;
+                             **\My Project\*.*">
+          <Output TaskParameter="Include" ItemName="DevelopmentDirs" />
+        </CreateItem>
+        <CreateItem Include="**\*.sln;
+                            **\*.vbproj;
+                            **\**\*.vb;
+                            **\*.bat;
+                            **\*.build;
+                            **\version.txt;
+                            **\**\*.SqlDataProvider;
+                            **\$(ProductName).xml;
+                            **\$(ProductName).XmlSerializers.dll">
+          <Output TaskParameter="Include" ItemName="DevelopmentFiles" />
+        </CreateItem>
+        <CreateItem Include="**\Documentation\*.*"
+                    Exclude="**\Documentation\DotNetNuke.Modules.Gallery_$(ModuleVersionNoRevision)_ReleaseNotes.txt;
+                             **\Documentation\License.txt;
+                             **\Documentation\Contributors.txt;
+                             **\Documentation\Readme.txt">
+          <Output TaskParameter="Include" ItemName="InstallDocumentationExclude" />
+        </CreateItem>
+        <CreateItem Include="**\Exif;
+                             version.txt;
+                             $(ModuleVersionNoRevision).txt;
+                             **\*.dnn;
+                             **\web.config">
+          <Output TaskParameter="Include" ItemName="VariousExclude" />
+        </CreateItem>
+
+        <!-- Files For Install Resource Zip-->
+        <CreateItem Include="**\*.*"
+                    Exclude="@(DefaultExclude);
+                             @(DevelopmentDirs);
+                             @(DevelopmentFiles);
+                             @(InstallDocumentationExclude);
+                             @(VariousExclude)">
+          <Output TaskParameter="Include" ItemName="InstallResourceZipFiles" />
+        </CreateItem>
+
+        <!-- Create Resources Zip-->
+        <Zip Files="@(InstallResourceZipFiles)" WorkingDirectory="$(PackageDir)\$(ProductName)" ZipFileName="Resources.zip" />
+
+        <!-- List installation files for Install zip-->
+        <CreateItem Include="**\*.dnn;
+                             **\bin\*.dll;
+                             **\Resources.zip;
+                             **\*.SqlDataProvider;
+                             $(ModuleVersionNoRevision).txt"
+                    Exclude="@(InstallResourceZipFiles);
+                             **\Exif\bin\Gallery.Exif.dll" >
+            <Output TaskParameter="Include" ItemName="InstallZipFiles" />
+        </CreateItem>
+
+        <!-- Zip installation files -->
+        <Zip Files="@(InstallZipFiles)" WorkingDirectory="$(PackageDir)\$(ProductName)" Flatten="True" ZipFileName="$(PackageDir)\$(ProductName)_$(ModuleVersion)_Install.zip" />
+
+        <Delete Files="Resources.zip" Condition="Exists('Resources.zip')" />
+
+        <!-- Exclude files from Source Resource Zip-->
+
+        <CreateItem Include="**\Documentation\*.*"
+                    Exclude="**\Documentation\DotNetNuke.Modules.Gallery_$(ModuleVersionNoRevision)_ReleaseNotes.txt;
+                             **\Documentation\DotNetNuke.Modules.Gallery_$(ModuleVersionNoRevision)_TestCases.txt;
+                             **\Documentation\DNN Gallery Module Development Environment Setup.doc;
+                             **\Documentation\License.txt;
+                             **\Documentation\Contributors.txt;
+                             **\Documentation\Readme.txt">
+          <Output TaskParameter="Include" ItemName="SourceDocumentationExclude" />
+        </CreateItem>
+        <CreateItem Include="**\*.*"
+                    Exclude="@(DefaultExclude);
+                             **\*.dnn;$(ModuleVersionNoRevision).txt;
+                             @(SourceDocumentationExclude);
+                             **\web.config">
+          <Output TaskParameter="Include" ItemName="SourceResourceZipFiles" />
+        </CreateItem>
+
+        <!-- Create Source Resources Zip-->
+        <Zip Files="@(SourceResourceZipFiles)" WorkingDirectory="$(PackageDir)\$(ProductName)" ZipFileName="Resources.zip" />
+
+        <!--List Of Files for Installable source zip-->
+        <CreateItem Include="**\*.dnn;
+                             **\bin\*.dll;
+                             **\Resources.zip;
+                             **\*.SqlDataProvider;
+                             $(ModuleVersionNoRevision).txt"
+                    Exclude="**\Exif\bin\Gallery.Exif.dll">
+          <Output TaskParameter="Include" ItemName="SourceZipFiles" />
+        </CreateItem>
+
+        <!-- Zip source files -->
+        <Zip Files="@(SourceZipFiles)" WorkingDirectory="$(ModuleRootDir)\"  Flatten="True"
+               ZipFileName="$(PackageDir)\$(ProductName)_$(ModuleVersion)_Source.zip"  />
+
+        <Delete Files="Resources.zip" Condition="Exists('Resources.zip')" />
+        
+        <!-- Create Package Zip Containing Both Source and Install -->
+        <!-- List Of Files for Installable source zip-->
+        <CreateItem Include="$(PackageDir)\$(ProductName)_$(ModuleVersion)_*.zip;
+                              **\Documentation\$(ProductName)_$(ModuleVersionNoRevision)_ReleaseNotes.txt;
+                              **\Documentation\$(ProductName)_$(ModuleVersionNoRevision)_TestCases.txt;">
+          <Output TaskParameter="Include" ItemName="PackageZipFiles" />
+        </CreateItem>
+
+        <Zip Files="@(PackageZipFiles)" WorkingDirectory="$(ModuleRootDir)\"  Flatten="True"
+            ZipFileName="$(PackageDir)\$(ProductName)_$(ModuleVersion)_Package.zip"  />
+  </Target>
+  
+  <!-- Copy scripts to website -->
+  <Target Name="CopyFilesToWebSite" Condition="$(WebSiteDir) != ''">
+      <CreateItem Include="$(MSBuildProjectDirectory)\bin\*.dll;
+                           $(MSBuildProjectDirectory)\bin\$(ProductName).pdb">
+            <Output TaskParameter="Include" ItemName="InstallBinFiles" />
+      </CreateItem>
+      <Copy SourceFiles="@(InstallBinFiles)" DestinationFolder="$(WebSiteDir)\bin\"
+             SkipUnchangedFiles="false" ContinueOnError="true" />
+      <XmlRead XPath="dotnetnuke/folders/folder/foldername"
+           XmlFileName="@(dnnFile)">
+          <Output TaskParameter="Value" PropertyName="FolderName" />
+      </XmlRead>
+      <Copy SourceFiles="@(Content)"
+            DestinationFiles="@(Content -> '$(WebSiteDir)\DesktopModules\$(FolderName)\%(Identity)')"
+            SkipUnchangedFiles="true" />
+    </Target>
+</Project>
