@@ -144,7 +144,7 @@
   <data name="plMaxFileSize.Text" xml:space="preserve">
     <value>Max File Size:</value>
   </data>
-  <data name="MaxFileSize.Help" xml:space="preserve">
+  <data name="plMaxFileSize.Help" xml:space="preserve">
     <value>The maximum size (in kb) of a single file that may be uploaded.&lt;br /&gt;If you need to permit uploads of files larger than the lesser of the maxRequestLength or requestLengthDiskThreshold set in the httpRuntime section of the site's web.config, it will also be necessary to increase those limits and possibly the executionTimeout.&lt;br /&gt;&lt;b&gt;Tip&lt;/b&gt;&lt;br/&gt;It is recommended to keep this value relatively small to avoid long loading times for images.</value>
   </data>
   <data name="plAutoApproval.Text" xml:space="preserve">

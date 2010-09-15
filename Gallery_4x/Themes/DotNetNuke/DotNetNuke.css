@@ -357,24 +357,30 @@ TD.Gallery_AlbumBR
 TD.Gallery_FileTL
 {
 	background: url('Images/frame_top_left.gif') no-repeat bottom right;
+	height: 10px;
+	width:10px;
 	padding: 0;
 }
 
 TD.Gallery_FileTC
 {		
-	background: url('Images/frame_top_center.gif') repeat-x bottom left;	
+	background: url('Images/frame_top_center.gif') repeat-x bottom left;
+	height: 10px;		
 	padding: 0;
 }
 
 TD.Gallery_FileTR
 {
-	background: url('Images/frame_top_right.gif') no-repeat  bottom left;	
+	background: url('Images/frame_top_right.gif') no-repeat  bottom left;
+	height:10px;
+	width:10px;	
 	padding: 0;
 }
 
 TD.Gallery_FileML
 {
 	background: url('Images/frame_middle_left.gif') repeat-y top right;
+	width: 10px;
 	padding: 0;	
 }
 
@@ -386,24 +392,30 @@ TD.Gallery_File
 TD.Gallery_FileMR
 {
 	background: url('Images/frame_middle_right.gif') repeat-y top left;
+	width: 10px;
 	padding: 0;	
 }
 
 TD.Gallery_FileBL
 {
-	background: url('Images/frame_bottom_left.gif') no-repeat top right;	
+	background: url('Images/frame_bottom_left.gif') no-repeat top right;
+	width: 10px;
+	height: 10px;	
 	padding: 0;
 }
 
 TD.Gallery_FileBC
 {
 	background: url('Images/frame_bottom_center.gif') repeat-x top;	
+	height: 10px;
 	padding: 0;
 }
 
 TD.Gallery_FileBR
 {
-	background: url('Images/frame_bottom_right.gif') no-repeat top left;	
+	background: url('Images/frame_bottom_right.gif') no-repeat top left;
+	width: 10px;
+	height:10px;	
 	padding: 0;	
 }
 
@@ -582,6 +594,11 @@ TD.Gallery_Image, .Gallery_Image
 	margin-right: auto;
 }
 
+.MediaMenu_Thumbnail img {
+    margin-left: 2px;
+    margin-top: 2px;
+}
+
 /*.MediaMenu_MenuContainer {
 	border-bottom: transparent 0px solid; 
 	border-left: transparent 0px solid; 
@@ -688,3 +705,7 @@ HR {
     padding-top: 4px;
     background: url('images/m_Back.gif') no-repeat center center;
 }
+
+/* added to remove border when img elements rendered in ASP.Net 4.0 */
+
+td.ToolBar img {border-width: 0}

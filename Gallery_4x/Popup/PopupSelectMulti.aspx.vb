@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -21,20 +21,16 @@
 Option Strict On
 
 Imports System.Web
-Imports System.IO
 Imports DotNetNuke
-Imports DotNetNuke.Security
-Imports DotNetNuke.Entities.Portals
-Imports DotNetNuke.Services.Localization
-Imports DotNetNuke.Entities.Modules.PortalModuleBase
-
 
 
 Namespace DotNetNuke.Modules.Gallery.PopupControls
 
-    Public Class PopupSelectMulti
-        Inherits DotNetNuke.Framework.PageBase
-        '' Changed Inherits System.Web.UI.Page to DNN Framework PageBase by M. Schlomann
+    Partial Class PopupSelectMulti
+        Inherits PopupPageBase
+
+        'Inherits DotNetNuke.Framework.PageBase
+        ''Changed Inherits System.Web.UI.Page to DNN Framework PageBase by M. Schlomann
 
         Public PageTitle As String = ""
         Public Appendtxt As String = ""
@@ -46,8 +42,6 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
         Public SelectRecords As String = ""
 
 
-
-
 #Region " Web Form Designer Generated Code "
 
         'This call is required by the Web Form Designer.
@@ -55,10 +49,10 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
 
         End Sub
 
-        Protected WithEvents btnTest As System.Web.UI.WebControls.Button
-        Protected WithEvents Button1 As System.Web.UI.HtmlControls.HtmlButton
-        Protected WithEvents Button2 As System.Web.UI.HtmlControls.HtmlButton
-        Protected WithEvents ctlSearch As DotNetNuke.Modules.Gallery.PopupControls.PopupSearch
+        'Protected WithEvents btnTest As System.Web.UI.WebControls.Button
+        'Protected WithEvents Button1 As System.Web.UI.HtmlControls.HtmlButton
+        'Protected WithEvents Button2 As System.Web.UI.HtmlControls.HtmlButton
+        'Protected WithEvents ctlSearch As DotNetNuke.Modules.Gallery.PopupControls.PopupSearch
         'Protected WithEvents ctlSearch As DotNetNuke.Modules.Gallery.PopupControls.PopupSearch
 
         'NOTE: The following placeholder declaration is required by the Web Form Designer.
@@ -76,8 +70,9 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
             'Put user code to initialize the page here
-            Dim _portalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
-            ctlSearch.PortalID = _portalSettings.PortalId 'PortalSettings.PortalId 
+
+            ctlSearch.PortalID = PortalSettings.PortalId
+
             'Localization  added by M. Schlomann/William Severance
             PageTitle = Localization.GetString("_Title", LocalResourceFile)
             Appendtxt = Localization.GetString("btnAppend_text", LocalResourceFile)
@@ -88,23 +83,6 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
             btnCancel = Localization.GetString("btnCancel_text", LocalResourceFile)
             SelectRecords = Localization.GetString("SelectRecords_text", LocalResourceFile)
         End Sub
-
-        Protected Sub RenderSearchHeader()
-
-        End Sub
-
-        Protected Sub RenderResultsFrame()
-
-        End Sub
-
-        Protected Sub RenderButtons()
-
-        End Sub
-
-        Protected Sub RenderCreatePrivileges()
-
-        End Sub
-
 
     End Class
 

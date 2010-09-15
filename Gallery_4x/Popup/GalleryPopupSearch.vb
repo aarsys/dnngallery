@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -38,7 +38,7 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
 
 
     Friend Class LocationListItem
-        Inherits DotNetNuke.Framework.PageBase
+        'Inherits DotNetNuke.Framework.PageBase
         '' Changed Inherits System.Web.UI.Page to DNN Framework PageBase by M. Schlomann
         Private mText As String
         Private mValue As String

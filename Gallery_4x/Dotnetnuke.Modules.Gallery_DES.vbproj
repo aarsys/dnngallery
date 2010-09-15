@@ -615,7 +615,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Popup\GalleryPopupSearch.vb">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Popup\PopupSelectMulti.aspx.designer.vb">
       <DependentUpon>PopupSelectMulti.aspx</DependentUpon>
@@ -711,7 +710,7 @@
     <Content Include="App_LocalResources\Voting.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="04.03.00.txt" />
+    <Content Include="04.03.02.txt" />
     <Content Include="Controls\ControlViewer.ascx" />
     <Content Include="GalleryPage.aspx" />
     <Content Include="Image.aspx" />
@@ -810,6 +809,12 @@
     <Content Include="Themes\DNNSimple\Images\s_zoomin.gif" />
     <Content Include="Themes\DNNSimple\Images\s_zoomout.gif" />
     <Content Include="Themes\DotNetNuke\Images\m_Back.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.03.01.SqlDataProvider" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.03.02.SqlDataProvider" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" Condition="" />

@@ -41,7 +41,7 @@
 		<td class="Gallery_HeaderImage" id="celGalleryMenu" align="center" runat="server" style="width: 50px">
 		<!-- Menu gets put here -->
 		</td>
-		<td class="Gallery_Header" id="celBreadcrumbs" runat="server" align="left" style="width:100%" colspan="2">
+		<td class="Gallery_Header" id="celBreadcrumbs" runat="server" align="left" colspan="2">
 		</td>
 		<td class="Gallery_HeaderCapRight" id="celHeaderRight"><img 
 		    alt="" src='<%=Page.ResolveUrl(GalleryConfig.GetImageURL("spacer_right.gif"))%>' width = "0" /></td>

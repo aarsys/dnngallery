@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -111,24 +111,26 @@ Namespace DotNetNuke.Modules.Gallery
         End Sub
 
         Private Function GetStats() As String
-            Dim iconCount As Integer = mUserRequest.Folder.IconItems.Count
-            Dim iunApprovedCount As Integer = mUserRequest.Folder.UnApprovedItems.Count
+
+            'William Severance (9/11/10) - Refactored to avoid null reference errors, display of unapproved item count to non-admin/non-owner users
             Dim stats As String = ""
+            If mUserRequest IsNot Nothing AndAlso mUserRequest.Folder IsNot Nothing Then
+                Dim iconCount As Integer = mUserRequest.Folder.IconItems.Count
+                Dim iunApprovedCount As Integer = mUserRequest.Folder.UnApprovedItems.Count
 
-            If (iunApprovedCount = Nothing) Then
-                stats = Localization.GetString("GalleryStatsApproved", LocalResourceFile)
-            Else
-                stats = Localization.GetString("GalleryStatsUnApproved", LocalResourceFile)
-            End If
 
-            stats = stats.Replace("[StartItem]", (mUserRequest.StartItem).ToString)
-            stats = stats.Replace("[EndItem]", (mUserRequest.CurrentItems.Count + mUserRequest.StartItem - 1).ToString)
+                If (iunApprovedCount = 0) OrElse (Not mGalleryAuthorize.IsItemOwner(mUserRequest.Folder)) Then
+                    stats = Localization.GetString("GalleryStatsApproved", LocalResourceFile)
+                    stats = stats.Replace("[TotalItem]", (mUserRequest.Folder.List.Count - iconCount - iunApprovedCount).ToString) ' - mUserRequest.RemoveItems).ToString)
+                Else
+                    stats = Localization.GetString("GalleryStatsUnApproved", LocalResourceFile)
+                    stats = stats.Replace("[TotalItem]", (mUserRequest.Folder.List.Count - iconCount).ToString) '- mUserRequest.RemoveItems).ToString)
+                    stats = stats.Replace("[Unapproved]", iunApprovedCount.ToString)
+                End If
 
-            If (iunApprovedCount = 0) Then
-                stats = stats.Replace("[TotalItem]", (mUserRequest.Folder.List.Count - mUserRequest.RemoveItems).ToString)
-            Else
-                stats = stats.Replace("[TotalItem]", (mUserRequest.Folder.List.Count - mUserRequest.RemoveItems - iunApprovedCount).ToString)
-                stats = stats.Replace("[Unapproved]", iunApprovedCount.ToString)
+                stats = stats.Replace("[StartItem]", (mUserRequest.StartItem).ToString)
+                stats = stats.Replace("[EndItem]", (mUserRequest.CurrentItems.Count + mUserRequest.StartItem - 1).ToString)
+
             End If
 
             Return stats

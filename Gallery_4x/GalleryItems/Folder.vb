@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -1024,8 +1024,8 @@ Namespace DotNetNuke.Modules.Gallery
                     ' Remember that we should add image first
                     Select Case mGalleryConfig.TypeFromExtension(gExt)
                         Case ItemType.Image
-                            If Not (gTitle.ToLower.IndexOf("icon") > -1) _
-                                  AndAlso Not (gTitle.ToLower = "watermark") _
+                            If (gTitle.ToLower <> "icon") _
+                                  AndAlso (gTitle.ToLower <> "watermark") _
                                   AndAlso (gApprovedDate <= DateTime.Now OrElse GalleryConfig.AutoApproval) Then
                                 mBrowsableItems.Add(gCounter) ' store reference to index
                             End If
@@ -1068,7 +1068,7 @@ Namespace DotNetNuke.Modules.Gallery
                             End If
 
                             gThumbnail = gName
-                            gThumbnailURL = BuildPath(New String(1) {Me.ThumbFolderURL, gThumbnail}, "/", False, True)
+                            gThumbnailURL = BuildPath(New String(1) {Me.ThumbFolderURL, HttpUtility.UrlPathEncode(gName).Replace(",", "%2C")}, "/", False, True)
 
                             gThumbnailPath = BuildPath(New String(1) {Me.ThumbFolderPath, gThumbnail}, "\", False, True)
                             Try ' Build the thumb on the fly if not exists
@@ -1173,24 +1173,20 @@ Namespace DotNetNuke.Modules.Gallery
                         mList.Add(gName, newFile)
 
                         ' Set icon image & watermark for parent folder
-                        Select Case gTitle.ToLower
-                            Case "icon"
-                                mThumbnail = gName
-                                mThumbnailURL = gThumbnailURL 'gURL
-                            Case "watermark"
-                                mWatermarkImage = newFile
-                        End Select
-
-                        If gTitle.ToLower.IndexOf("icon") > -1 OrElse gTitle.ToLower = "watermark" Then
+                        Dim gTitleLowered As String = gTitle.ToLower
+                        If gTitleLowered.IndexOf("icon") > -1 Then
+                            mThumbnail = gName
+                            mThumbnailURL = gThumbnailURL 'gURL
                             mIconItems.Add(newFile)
-                        End If
-
-                        If Not (newFile.Title.ToLower.IndexOf("icon") > -1) _
-                        AndAlso Not (newFile.Title.ToLower = "watermark") _
-                        AndAlso (newFile.ApprovedDate <= DateTime.Now OrElse GalleryConfig.AutoApproval) Then
-                            mSortList.Add(newFile)
+                        ElseIf gTitleLowered = "watermark" Then
+                            mWatermarkImage = newFile
+                            mIconItems.Add(newFile)
                         Else
-                            mUnApprovedItems.Add(gCounter)
+                            If (newFile.ApprovedDate <= DateTime.Now OrElse GalleryConfig.AutoApproval) Then
+                                mSortList.Add(newFile)
+                            Else
+                                mUnApprovedItems.Add(gCounter)
+                            End If
                         End If
                         gCounter += 1
                     End If
@@ -1315,38 +1311,42 @@ Namespace DotNetNuke.Modules.Gallery
         Protected Function GetItemInfo() As String
             Dim sb As New StringBuilder
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Name.ToString)) Then
+            ' William Severance (9-10-2010) - Modified to use bitmapped TextDisplayOptions flags rather than iterating through string array for each test.
+
+            If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Name) <> 0 Then
                 sb.Append(Name)
-                sb.Append(" ")
-                Dim sizeInfo As String = Localization.GetString("AlbumSizeInfo", GalleryConfig.SharedResourceFile)
-                sizeInfo = sizeInfo.Replace("[ItemCount]", (Size - (IconItems.Count + UnApprovedItems.Count)).ToString)
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Size) <> 0 Then
+                    sb.Append(" ")
+                    Dim sizeInfo As String = Localization.GetString("AlbumSizeInfo", GalleryConfig.SharedResourceFile)
+                    sizeInfo = sizeInfo.Replace("[ItemCount]", (Size - (IconItems.Count + UnApprovedItems.Count)).ToString)
+                End If
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Client.ToString)) _
-            AndAlso Not Client.Length = 0 Then
+            If ((GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Client) <> 0) _
+                  AndAlso Not Client.Length = 0 Then
                 sb.Append(Localization.GetString("Client", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(Client)
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Location.ToString)) _
-            AndAlso Not Location.Length = 0 Then
+            If ((GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Location) <> 0) _
+                  AndAlso Not Location.Length = 0 Then
                 sb.Append(Localization.GetString("Location", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(Location)
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.CreatedDate.ToString)) Then
+            If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.CreatedDate) <> 0 Then
                 sb.Append(Localization.GetString("CreatedDate", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(CreatedDate.ToShortDateString)
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.ApprovedDate.ToString)) Then
+            If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.ApprovedDate) <> 0 Then
                 sb.Append(Localization.GetString("ApprovedDate", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(Utils.DateToText(ApprovedDate)) 'WES - show DateTime.MaxValue as empty string
@@ -1380,23 +1380,32 @@ Namespace DotNetNuke.Modules.Gallery
             Try
                 Dim ps As PortalSettings = PortalController.GetCurrentPortalSettings()
                 Dim rootPath As String = HttpContext.Current.Server.MapPath(albumURL)
-                Dim homeDirectoryRelativeURL As String = FileSystemUtils.FormatFolderPath(albumURL.Replace(ps.HomeDirectory, ""))
+                Dim homeDirectoryRelativeURL As String = FileSystemUtils.FormatFolderPath(albumURL.Substring(ps.HomeDirectory.Length))
                 Dim fldController As New DotNetNuke.Services.FileSystem.FolderController
                 Dim folder As DotNetNuke.Services.FileSystem.FolderInfo = fldController.GetFolder(ps.PortalId, homeDirectoryRelativeURL, False)
                 If Not System.IO.Directory.Exists(rootPath) OrElse folder Is Nothing Then
                     Dim parentPath As String = ps.HomeDirectoryMapPath
-                    Dim relativeFolders() As String = rootPath.Replace(parentPath, "").Split("\"c)
-                    For Each folderName As String In relativeFolders
-                        FileSystemUtils.AddFolder(ps, parentPath, folderName & "/")
-                        parentPath = parentPath & folderName & "\"
-                    Next
+                    'Dim relativeFolders() As String = rootPath.Replace(parentPath, "").Split("\"c)
+                    'For Each folderName As String In relativeFolders
+                    '    If folderName <> "" Then
+                    '        FileSystemUtils.AddFolder(ps, parentPath, folderName & "/")
+                    '        parentPath = parentPath & folderName & "\"
+                    '    End If
+                    'Next
+                    FileSystemUtils.AddFolder(ps, parentPath, homeDirectoryRelativeURL)
                     folderID = fldController.GetFolder(ps.PortalId, homeDirectoryRelativeURL, True).FolderID
                 Else
                     folderID = folder.FolderID
                 End If
                 If addSourceAndThumb Then
-                    FileSystemUtils.AddFolder(ps, rootPath, FileSystemUtils.FormatFolderPath(Config.DefaultThumbFolder))
-                    FileSystemUtils.AddFolder(ps, rootPath, FileSystemUtils.FormatFolderPath(Config.DefaultSourceFolder))
+                    Dim thumbPath As String = FileSystemUtils.FormatFolderPath(Config.DefaultThumbFolder)
+                    Dim sourcePath As String = FileSystemUtils.FormatFolderPath(Config.DefaultSourceFolder)
+                    If fldController.GetFolder(ps.PortalId, homeDirectoryRelativeURL & thumbPath) Is Nothing Then
+                        FileSystemUtils.AddFolder(ps, rootPath, thumbPath)
+                    End If
+                    If fldController.GetFolder(ps.PortalId, homeDirectoryRelativeURL & sourcePath) Is Nothing Then
+                        FileSystemUtils.AddFolder(ps, rootPath, sourcePath)
+                    End If
                 End If
             Catch ex As Exception
                 LogException(ex)

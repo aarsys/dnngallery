@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -27,6 +27,9 @@ Imports System.Configuration
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports System.Web.Security
+Imports System.Threading
+Imports System.Globalization
+
 Imports DotNetNuke
 Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Entities.Portals
@@ -37,9 +40,170 @@ Imports DotNetNuke.Services.Localization
 
 Namespace DotNetNuke.Modules.Gallery.PopupControls
 
+    Public Class PopupPageBase
+        Inherits System.Web.UI.Page
+
+#Region "Private Members"
+        Private _localResourceFile As String
+        Private _PageCulture As CultureInfo
+#End Region
+
+#Region "Public Properties"
+        Public ReadOnly Property PortalSettings() As PortalSettings
+            Get
+                PortalSettings = PortalController.GetCurrentPortalSettings
+            End Get
+        End Property
+
+        Public ReadOnly Property PageCulture() As CultureInfo
+            Get
+                If _PageCulture Is Nothing Then
+                    Dim enabledLocales As LocaleCollection = Services.Localization.Localization.GetEnabledLocales()
+                    Dim ci As CultureInfo = Nothing
+                    'used as temporary variable to get info about the preferred locale
+                    Dim preferredLocale As String = ""
+                    'used as temporary variable where the language part of the preferred locale will be saved
+                    Dim preferredLanguage As String = ""
+
+                    'first try if a specific language is requested by cookie, querystring, or form
+                    If Not (HttpContext.Current Is Nothing) Then
+                        Try
+                            preferredLocale = HttpContext.Current.Request("language")
+                            If preferredLocale <> "" Then
+                                If Services.Localization.Localization.LocaleIsEnabled(preferredLocale) Then
+                                    ci = New CultureInfo(preferredLocale)
+                                Else
+                                    preferredLanguage = preferredLocale.Split("-"c)(0)
+                                End If
+                            End If
+                        Catch
+                        End Try
+                    End If
+
+                    If ci Is Nothing Then
+                        ' next try to get the preferred language of the logged on user
+                        Dim objUserInfo As UserInfo = UserController.GetCurrentUserInfo
+                        If objUserInfo.UserID <> -1 Then
+                            If objUserInfo.Profile.PreferredLocale <> "" Then
+                                If Services.Localization.Localization.LocaleIsEnabled(preferredLocale) Then
+                                    ci = New CultureInfo(objUserInfo.Profile.PreferredLocale)
+                                Else
+                                    If preferredLanguage = "" Then
+                                        preferredLanguage = objUserInfo.Profile.PreferredLocale.Split("-"c)(0)
+                                    End If
+                                End If
+                            End If
+                        End If
+                    End If
+
+                    If ci Is Nothing AndAlso Localization.UseBrowserLanguage() Then
+                        ' use Request.UserLanguages to get the preferred language
+                        If Not (HttpContext.Current Is Nothing) Then
+                            If Not (HttpContext.Current.Request.UserLanguages Is Nothing) Then
+                                Try
+                                    For Each userLang As String In HttpContext.Current.Request.UserLanguages
+                                        'split userlanguage by ";"... all but the first language will contain a preferrence index eg. ;q=.5
+                                        Dim userlanguage As String = userLang.Split(";"c)(0)
+                                        If Services.Localization.Localization.LocaleIsEnabled(userlanguage) Then
+                                            ci = New CultureInfo(userlanguage)
+                                        ElseIf userLang.Split(";"c)(0).IndexOf("-") <> -1 Then
+                                            'if userLang is neutral we don't need to do this part since
+                                            'it has already been done in LocaleIsEnabled( )
+                                            Dim templang As String = userLang.Split(";"c)(0)
+                                            For Each _localeCode As String In enabledLocales.AllKeys
+                                                If _localeCode.Split("-"c)(0) = templang.Split("-"c)(0) Then
+                                                    'the preferredLanguage was found in the enabled locales collection, so we are going to use this one
+                                                    'eg, requested locale is en-GB, requested language is en, enabled locale is en-US, so en is a match for en-US
+                                                    ci = New CultureInfo(_localeCode)
+                                                    Exit For
+                                                End If
+                                            Next
+                                        End If
+                                        If Not ci Is Nothing Then
+                                            Exit For
+                                        End If
+                                    Next
+                                Catch
+                                End Try
+                            End If
+                        End If
+                    End If
+
+                    If ci Is Nothing And preferredLanguage <> "" Then
+                        'we still don't have a good culture, so we are going to try to get a culture with the preferredlanguage instead
+                        For Each _localeCode As String In enabledLocales.AllKeys
+                            If _localeCode.Split("-"c)(0) = preferredLanguage Then
+                                'the preferredLanguage was found in the enabled locales collection, so we are going to use this one
+                                'eg, requested locale is en-GB, requested language is en, enabled locale is en-US, so en is a match for en-US
+                                ci = New CultureInfo(_localeCode)
+                                Exit For
+                            End If
+                        Next
+                    End If
+
+                    'we still have no culture info set, so we are going to use the fallback method
+                    If ci Is Nothing Then
+                        If PortalSettings.DefaultLanguage = "" Then
+                            ' this is a last resort, as the portal default language should always be set
+                            ' however if its not set, return the first enabled locale
+                            ' if there are no enabled locales, return the systemlocale
+                            If enabledLocales.Count > 0 Then
+                                ci = New CultureInfo(CType(enabledLocales(0).Key, String))
+                            Else
+                                ci = New CultureInfo(Services.Localization.Localization.SystemLocale)
+                            End If
+                        Else
+                            ' as the portal default language can never be disabled, we know this language is available and enabled
+                            ci = New CultureInfo(PortalSettings.DefaultLanguage)
+                        End If
+                    End If
+
+                    If ci Is Nothing Then
+                        'just a safeguard, to make sure we return something
+                        ci = New CultureInfo(Services.Localization.Localization.SystemLocale)
+                    End If
+
+                    'finally set the cookie
+                    DotNetNuke.Services.Localization.Localization.SetLanguage(ci.Name)
+                    _PageCulture = ci
+                End If
+                Return _PageCulture
+            End Get
+        End Property
+
+        Public Property LocalResourceFile() As String
+            Get
+                Dim fileRoot As String
+                Dim page As String() = Request.ServerVariables("SCRIPT_NAME").Split("/"c)
+
+                If _localResourceFile = "" Then
+                    fileRoot = Me.TemplateSourceDirectory & "/" & Services.Localization.Localization.LocalResourceDirectory & "/" & page(page.GetUpperBound(0)) & ".resx"
+                Else
+                    fileRoot = _localResourceFile
+                End If
+                Return fileRoot
+            End Get
+            Set(ByVal Value As String)
+                _localResourceFile = Value
+            End Set
+        End Property
+
+#End Region
+
+        Protected Overrides Sub OnInit(ByVal e As System.EventArgs)
+            MyBase.OnInit(e)
+            If HttpContext.Current.Request IsNot Nothing AndAlso Not HttpContext.Current.Request.Url.LocalPath.ToLower.EndsWith("installwizard.aspx") Then
+                ' Set the current culture
+                Thread.CurrentThread.CurrentUICulture = PageCulture
+                Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture
+            End If
+        End Sub
+    End Class
+
     Public Class PopupControl
-        'Inherits WebControl
-        Inherits DotNetNuke.Framework.PageBase
+        Inherits WebControl
+        'Inherits DotNetNuke.Framework.PageBase
+        ''Changed Inherits System.Web.UI.Page to DNN Framework PageBase by M. Schlomann
 
         Implements INamingContainer
         Private mInitialised As Boolean

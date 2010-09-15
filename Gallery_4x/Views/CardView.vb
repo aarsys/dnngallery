@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -181,7 +181,8 @@ Namespace DotNetNuke.Modules.Gallery.Views
                             wr.AddAttribute(HtmlTextWriterAttribute.Id, "description_" & item.ID)
                             wr.RenderBeginTag(HtmlTextWriterTag.Span)
 
-                            If item.Description.Length > 0 Then
+                            If ((mGalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Description) <> 0) _
+                                   AndAlso Not item.Description.Length = 0 Then
                                 wr.Write(item.Description)
                             Else
                                 wr.Write("&nbsp;")

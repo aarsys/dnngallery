@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -43,39 +43,43 @@ Namespace DotNetNuke.Modules.Gallery
     Public Class Config
 
 #Region "Enumerators"
+        <Flags()> _
         Public Enum GalleryDisplayOption
-            [Name]
-            [Author]
-            [Location]
-            [Client]
-            [CreatedDate]
-            [ApprovedDate]
+            Title = 1
+            Name = 2
+            Size = 4
+            Client = 8
+            Author = 16
+            Location = 32
+            Description = 64
+            CreatedDate = 128
+            ApprovedDate = 256
         End Enum
 
-        Enum ItemType
-            Folder
+        Enum ItemType As Integer
+            Folder = 1
             Image
             Movie
             Flash
             Zip
         End Enum
 
-        Enum GallerySort
+        Enum GallerySort As Integer
             Name = 1
-            Title = 3
-            Size = 2
-            Author = 4
-            Location = 5
-            Score = 6
-            OwnerID = 7
-            CreatedDate = 8
-            ApprovedDate = 9
+            Size
+            Title
+            Author
+            Location
+            Score
+            OwnerID
+            CreatedDate
+            ApprovedDate
         End Enum
 
-        Enum GalleryView
+        Enum GalleryView As Integer
             CardView = 0
-            ListView = 1
-            Standard = 2
+            ListView
+            Standard
         End Enum
 
 #End Region
@@ -108,7 +112,7 @@ Namespace DotNetNuke.Modules.Gallery
         Private mMovieExtensions As String
         Private mFlashExtensions As String
         Private mCategoryValues As String
-        Private mTextDisplayValues As String
+        Private mTextDisplayOptions As Config.GalleryDisplayOption
 
         Private mFileTypes As New ArrayList
         Private mMovieTypes As New ArrayList
@@ -273,13 +277,13 @@ Namespace DotNetNuke.Modules.Gallery
         '<daniel-- removed to be replaced by the core host extensions11/22/05>
         Public Shared ReadOnly Property DefaultFileExtensions() As String
             Get
-                Return permittedFileTypes(".jpg;.gif;.bmp;.png;.tif")
+                Return permittedFileTypes(".jpg;.jpeg;.gif;.bmp;.png;.tif")
             End Get
         End Property
 
         Public Shared ReadOnly Property DefaultMovieExtensions() As String
             Get
-                Return permittedFileTypes(".mov;.wmv;.wma;.mpg;.avi;.asf;.asx;.mpe;.mpeg;.mid;.midi;.wav;.aiff;.mp3")
+                Return permittedFileTypes(".mov;.wmv;.wma;.mpg;.avi;.asf;.asx;.mpe;.mpeg;.mid;.midi;.wav;.aiff;.mp3;.mp4;.m4v")
             End Get
         End Property
 
@@ -297,7 +301,7 @@ Namespace DotNetNuke.Modules.Gallery
 
         Public Shared ReadOnly Property DefaultTextDisplayValues() As String
             Get
-                Return "Name;Size;Description"
+                Return "Name;Description;Size;Title"
             End Get
         End Property
 
@@ -714,9 +718,9 @@ Namespace DotNetNuke.Modules.Gallery
             End Get
         End Property
 
-        Public ReadOnly Property TextDisplay() As ArrayList
+        Public ReadOnly Property TextDisplayOptions As Config.GalleryDisplayOption
             Get
-                Return mTextDisplay
+                Return mTextDisplayOptions
             End Get
         End Property
 
@@ -1073,9 +1077,20 @@ Namespace DotNetNuke.Modules.Gallery
                 mCategories.Add(GetLocalization(catValue))
             Next
 
-            mTextDisplayValues = GetValue(settings("TextDisplayValues"), DefaultTextDisplayValues)
-            For Each textValue In Split(mTextDisplayValues, ";", , CompareMethod.Text)
-                mTextDisplay.Add((textValue).ToLower)
+            ' William Severance (9-10-2010) - added additional display options and changed option persistance from array of
+            ' option names to bitmapped flags for each option. See Config.GalleryDispayOption for bit definitions.
+
+            mTextDisplayOptions = 0      'Note: mTextDisplayOptions contains bitmapped flags for each option
+            Dim optionValue As Config.GalleryDisplayOption
+            For Each textValue In Split(GetValue(settings("TextDisplayValues"), ""), ";", , CompareMethod.Text)
+                If Not String.IsNullOrEmpty(textValue) Then
+                    Try
+                        optionValue = CType([Enum].Parse(GetType(Config.GalleryDisplayOption), textValue), Config.GalleryDisplayOption)
+                        mTextDisplayOptions = mTextDisplayOptions Or optionValue
+                    Catch ex As Exception
+                        'Eat the exception - unrecognized option name in string.
+                    End Try
+                End If
             Next
 
             mSortPropertyValues = GetValue(settings("SortPropertyValues"), DefaultSortPropertyValues)

@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -84,7 +84,7 @@ Namespace DotNetNuke.Modules.Gallery
 
                 ' GAL-9527. RootURL will now be relative to portal home directory not website root and modifiable only by administrators role
                 lblHomeDirectory.Text = PortalSettings.HomeDirectory
-                RootURL.Text = mGalleryConfig.RootURL.Replace(PortalSettings.HomeDirectory, "")
+                RootURL.Text = mGalleryConfig.RootURL.Substring(PortalSettings.HomeDirectory.Length)
 
                 'William Severance - Added primarily to test use of InvariantCulture to save/recall date strings from ModuleSettings
                 txtCreatedDate.Text = mGalleryConfig.CreatedDate.ToShortDateString()
@@ -166,23 +166,40 @@ Namespace DotNetNuke.Modules.Gallery
         End Sub
 
         Private Sub BindDisplayList()
-            Dim dict As New System.Collections.Specialized.ListDictionary
-            For Each name As String In [Enum].GetNames(GetType(Config.GalleryDisplayOption))
-                dict.Add(name, Localization.GetString(name, mGalleryConfig.SharedResourceFile))
+
+            'William Severance (9-1-2010) - Refactored to use bitmapped TextDisplayOptions rather than array of strings
+
+            Dim li As ListItem
+            Dim key As String
+            Dim galleryDisplayOptionType As Type = GetType(Config.GalleryDisplayOption)
+            Dim values As Config.GalleryDisplayOption() = DirectCast([Enum].GetValues(galleryDisplayOptionType), Config.GalleryDisplayOption())
+
+            lstDisplay.Items.Clear()
+            For Each value As Config.GalleryDisplayOption In [Enum].GetValues(galleryDisplayOptionType)
+                key = value.ToString
+                li = New ListItem(Localization.GetString(key, mGalleryConfig.SharedResourceFile), key)
+                li.Selected = ((mGalleryConfig.TextDisplayOptions And value) <> 0)
+                lstDisplay.Items.Add(li)
             Next
 
-            lstDisplay.ClearSelection()
-            lstDisplay.DataTextField = "value"
-            lstDisplay.DataValueField = "key"
-            lstDisplay.DataSource = dict
-            lstDisplay.DataBind()
 
-            Dim item As ListItem
-            For Each item In lstDisplay.Items
-                If mGalleryConfig.TextDisplay.Contains(LCase(item.Value.ToString)) Then
-                    item.Selected = True
-                End If
-            Next
+            'Dim dict As New System.Collections.Specialized.ListDictionary
+            'For Each name As String In [Enum].GetNames(GetType(Config.GalleryDisplayOption))
+            '    dict.Add(name, Localization.GetString(name, mGalleryConfig.SharedResourceFile))
+            'Next
+
+            'lstDisplay.ClearSelection()
+            'lstDisplay.DataTextField = "value"
+            'lstDisplay.DataValueField = "key"
+            'lstDisplay.DataSource = dict
+            'lstDisplay.DataBind()
+
+            'Dim item As ListItem
+            'For Each item In lstDisplay.Items
+            '    If mGalleryConfig.TextDisplay.Contains(LCase(item.Value.ToString)) Then
+            '        item.Selected = True
+            '    End If
+            'Next
         End Sub
 
         Private Sub BindGalleryView()
@@ -341,7 +358,7 @@ Namespace DotNetNuke.Modules.Gallery
                 ' WES: Modified to restrict RootURL to be portal home directory relative
                 Dim homeDirectoryRelativeRootURL As String = Security.InputFilter(RootURL.Text, PortalSecurity.FilterFlag.NoMarkup)
                 homeDirectoryRelativeRootURL = Regex.Replace(homeDirectoryRelativeRootURL, "\.{2,}[\\/]{0,1}|[\000-\037:*?""><|&]", "").Replace("\", "/").Replace("//", "/")
-                Dim pt As Integer = homeDirectoryRelativeRootURL.LastIndexOf(PortalSettings.HomeDirectory)
+                Dim pt As Integer = homeDirectoryRelativeRootURL.LastIndexOf(PortalSettings.HomeDirectory, StringComparison.InvariantCultureIgnoreCase)
                 If pt >= 0 Then homeDirectoryRelativeRootURL = homeDirectoryRelativeRootURL.Substring(pt)
                 homeDirectoryRelativeRootURL = FileSystemUtils.FormatFolderPath(homeDirectoryRelativeRootURL.TrimStart("/"c))
                 RootURL.Text = homeDirectoryRelativeRootURL
@@ -526,7 +543,7 @@ Namespace DotNetNuke.Modules.Gallery
             Try
                 objSection = DotNetNuke.Common.Utilities.Config.GetSection("system.web/httpRuntime")
             Catch ex As Exception
-                LogException(ex)
+                'LogException(ex) 'Do not log error if system.web/httpRuntime section not available.
             End Try
 
             Dim helpMsg As String = Localization.GetString("MaxFileSize.Help", LocalResourceFile)

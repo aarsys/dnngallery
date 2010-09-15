@@ -1,4 +1,4 @@
-Gallery 04.03.00 Test Cases
+Gallery 04.03.02 Test Cases
 ========================================
 
 
@@ -138,3 +138,10 @@ Expected:
 3. Unauthenticated users have now access to the download.
 4. Unauthentificated users can download a file without errors.
 5. No errors on checking the Event Viewer.
+
+Other Tests
+------------------------------------
+If time permits, verify that each of the issues listed are fixed in the 04.03.02 release notes
+are actually fixed in the release package. In particular, verify that no exceptions related to the
+Gallery module are being logged upon application startup or refresh of the gallery cache and that
+it is possible to add child albums without error when running under DNN 5.05.xx.

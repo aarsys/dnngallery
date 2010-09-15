@@ -8,7 +8,7 @@ Namespace DotNetNuke.Modules.Gallery
     ' Class from which all gallery pop-up pages (Viewer.aspx, Slideshow.aspx, FlashPlayer.aspx,
     ' MediaPlayer.aspx, ExifMetaData.aspx inherit.
 
-    Public Class GalleryPageBase
+    Partial Public Class GalleryPageBase
         Inherits DotNetNuke.Framework.PageBase
 
         Private _GalleryConfig As DotNetNuke.Modules.Gallery.Config

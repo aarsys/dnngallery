@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -267,12 +267,12 @@ Namespace DotNetNuke.Modules.Gallery
             If ps.HostSpace = 0 Then
                 hostSpace = Long.MaxValue
             Else
-                hostSpace = ps.HostSpace * 1024 * 1024
+                hostSpace = CLng(ps.HostSpace) * 1024L * 1024L   'Convert portal hostspace in MB to bytes
             End If
             If GalleryConfig.Quota = 0 Then
                 mSpaceAvailable = hostSpace - mGallerySpaceUsed
             Else
-                mSpaceAvailable = Math.Min(GalleryConfig.Quota * 1024, hostSpace) - mGallerySpaceUsed
+                mSpaceAvailable = Math.Min(GalleryConfig.Quota * 1024L, hostSpace) - mGallerySpaceUsed
             End If
             mSize = GetCollectionSize()
             mSpaceAvailable -= mSize
