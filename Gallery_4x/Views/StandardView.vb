@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -162,22 +162,23 @@ Namespace DotNetNuke.Modules.Gallery.Views
                             End If 'If mGalleryAuthorize.ItemCanVote(item) Then
 
 
+                            If (mGalleryConfig.TextDisplayOptions And GalleryDisplayOption.Title) <> 0 Then
+                                wr.RenderBeginTag(HtmlTextWriterTag.Tr) ' title
+                                wr.AddAttribute(HtmlTextWriterAttribute.Valign, "middle")
+                                wr.AddAttribute(HtmlTextWriterAttribute.Align, "center")
+                                wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_AltHeaderText")
+                                wr.RenderBeginTag(HtmlTextWriterTag.Td)
+                                'William Severance - Modified to append CurrentStrip parameter to querystring
 
-                            wr.RenderBeginTag(HtmlTextWriterTag.Tr) ' title
-                            wr.AddAttribute(HtmlTextWriterAttribute.Valign, "middle")
-                            wr.AddAttribute(HtmlTextWriterAttribute.Align, "center")
-                            wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_AltHeaderText")
-                            wr.RenderBeginTag(HtmlTextWriterTag.Td)
-                            'William Severance - Modified to append CurrentStrip parameter to querystring
-                            If Not mGalleryConfig.AllowPopup Then
-                                RenderCommandButton(wr, Utils.AppendURLParameter(item.BrowserURL, "currentstrip=" & mUserRequest.CurrentStrip.ToString), item.Title, "Gallery_AltHeaderText")
-                            Else
-                                RenderCommandButton(wr, item.BrowserURL, item.Title, "Gallery_AltHeaderText")
+                                If Not mGalleryConfig.AllowPopup Then
+                                    RenderCommandButton(wr, Utils.AppendURLParameter(item.BrowserURL, "currentstrip=" & mUserRequest.CurrentStrip.ToString), item.Title, "Gallery_AltHeaderText")
+                                Else
+                                    RenderCommandButton(wr, item.BrowserURL, item.Title, "Gallery_AltHeaderText")
+                                End If
+                                'RenderCommandButton(wr, item.BrowserURL, item.Title, "Gallery_AltHeaderText")
+                                wr.RenderEndTag() ' td title
+                                wr.RenderEndTag() ' tr title
                             End If
-                            'RenderCommandButton(wr, item.BrowserURL, item.Title, "Gallery_AltHeaderText")
-                            wr.RenderEndTag() ' td title
-                            wr.RenderEndTag() ' tr title
-
                             wr.RenderBeginTag(HtmlTextWriterTag.Tr) ' info
                             wr.AddAttribute(HtmlTextWriterAttribute.Valign, "middle")
                             wr.AddAttribute(HtmlTextWriterAttribute.Align, "center")
@@ -194,7 +195,8 @@ Namespace DotNetNuke.Modules.Gallery.Views
                             wr.AddAttribute(HtmlTextWriterAttribute.Height, "100%")
                             wr.RenderBeginTag(HtmlTextWriterTag.Td)
 
-                            If item.Description.Length > 0 Then
+                            If ((mGalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Description) <> 0) _
+                                    AndAlso Not item.Description.Length = 0 Then
                                 wr.Write(item.Description)
                             Else
                                 wr.Write("&nbsp;")
@@ -312,20 +314,20 @@ Namespace DotNetNuke.Modules.Gallery.Views
             'alt tag is not allowed here - xhtml validation HWZassenhaus 9/24/2008
             'wr.AddAttribute(HtmlTextWriterAttribute.Alt, "''")
             wr.RenderBeginTag(HtmlTextWriterTag.Table) ' table image & details
-
             wr.RenderBeginTag(HtmlTextWriterTag.Tr)
 
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileTL")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            RenderImage(wr, mGalleryConfig.GetImageURL("spacer_left.gif"), "", "")
+            'RenderImage(wr, mGalleryConfig.GetImageURL("spacer_left.gif"), "", "")
             wr.RenderEndTag() ' td
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileTC")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            wr.Write("&nbsp;")
+            'wr.Write("&nbsp;")
+            'RenderImage(wr, mGalleryConfig.GetImageURL("spacer.gif"), "", "")
             wr.RenderEndTag() ' td
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileTR")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            RenderImage(wr, mGalleryConfig.GetImageURL("spacer_right.gif"), "", "")
+            'RenderImage(wr, mGalleryConfig.GetImageURL("spacer_right.gif"), "", "")
             wr.RenderEndTag() ' td
 
             wr.RenderEndTag() ' tr
@@ -334,7 +336,7 @@ Namespace DotNetNuke.Modules.Gallery.Views
 
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileML")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            wr.Write("&nbsp;")
+            'wr.Write("&nbsp;")
             wr.RenderEndTag() ' td
 
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_File")
@@ -368,7 +370,7 @@ Namespace DotNetNuke.Modules.Gallery.Views
 
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileMR")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            wr.Write("&nbsp;")
+            'wr.Write("&nbsp;")
             wr.RenderEndTag() ' td
 
             wr.RenderEndTag() ' tr
@@ -377,17 +379,18 @@ Namespace DotNetNuke.Modules.Gallery.Views
 
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileBL")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            wr.Write("&nbsp;")
+            'wr.Write("&nbsp;")
             wr.RenderEndTag() ' td
 
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileBC")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            wr.Write("&nbsp;")
+            'wr.Write("&nbsp;")
+            'RenderImage(wr, mGalleryConfig.GetImageURL("spacer.gif"), "", "")
             wr.RenderEndTag() ' td
 
             wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_FileBR")
             wr.RenderBeginTag(HtmlTextWriterTag.Td)
-            wr.Write("&nbsp;")
+            'wr.Write("&nbsp;")
             wr.RenderEndTag() ' td
 
             wr.RenderEndTag() ' tr

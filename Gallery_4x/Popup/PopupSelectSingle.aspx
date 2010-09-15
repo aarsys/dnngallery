@@ -1,6 +1,5 @@
-﻿<%@ Register TagPrefix="dnn" Assembly="Dotnetnuke.Modules.Gallery" Namespace="DotNetNuke.Modules.Gallery.PopupControls" %>
-<%@ Page language="vb" Inherits="DotNetNuke.Modules.Gallery.PopupControls.PopupSelectSingle" Codebehind="PopupSelectSingle.aspx.vb" AutoEventWireup="false" %>
-
+﻿<%@ Page language="vb" Inherits="DotNetNuke.Modules.Gallery.PopupControls.PopupSelectSingle" Codebehind="PopupSelectSingle.aspx.vb" AutoEventWireup="false" %>
+<%@ Register TagPrefix="dnn" Assembly="Dotnetnuke.Modules.Gallery" Namespace="DotNetNuke.Modules.Gallery.PopupControls" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%">
@@ -28,7 +27,7 @@
 
 		function windowonload()
 		{
-			findValue.focus();
+			//findValue.focus();
 		}
 
 		function resultsReady()
@@ -89,6 +88,7 @@
 	  
 	</head>
 	<body style="width:100%;height:100%">
+	  <form id="Form1" runat="server" method="post">
 		<table style="width:100%;height:100%" cellspacing="0" cellpadding="0">
 			<tbody>
 				<tr>
@@ -138,5 +138,6 @@
 				</tr>
 			</tbody>
 		</table>
+	  </form>
 	</body>
 </html>

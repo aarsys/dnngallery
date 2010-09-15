@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -669,51 +669,51 @@ Namespace DotNetNuke.Modules.Gallery
         Protected Function GetItemInfo() As String
             Dim sb As New StringBuilder
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Name.ToString)) Then
+            ' William Severance (9-10-2010) - Modified to use bitmapped TextDisplayOptions flags rather than iterating through string array for each test.
+
+            If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Name) <> 0 Then
                 sb.Append(Name)
-                sb.Append(" ")
-
-                Dim sizeInfo As String = Localization.GetString("FileSizeInfo", GalleryConfig.SharedResourceFile)
-                sizeInfo = sizeInfo.Replace("[FileSize]", Math.Ceiling(Size / 1024).ToString)
-                sb.Append(sizeInfo)
-            End If
-
-            If sb.Length > 0 Then
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Size) <> 0 Then
+                    sb.Append(" ")
+                    Dim sizeInfo As String = Localization.GetString("FileSizeInfo", GalleryConfig.SharedResourceFile)
+                    sizeInfo = sizeInfo.Replace("[FileSize]", Math.Ceiling(Size / 1024).ToString)
+                    sb.Append(sizeInfo)
+                End If
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Author.ToString)) _
-            AndAlso Not Author.Length = 0 Then
+            If ((GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Author) <> 0) _
+                  AndAlso Not Author.Length = 0 Then
                 sb.Append(Localization.GetString("Author", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(Author)
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Client.ToString)) _
-            AndAlso Not Client.Length = 0 Then
+            If ((GalleryConfig.TextDisplayOptions And GalleryDisplayOption.Client) <> 0) _
+                  AndAlso Not Client.Length = 0 Then
                 sb.Append(Localization.GetString("Client", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(Client)
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Location.ToString)) _
-            AndAlso Not Location.Length = 0 Then
+            If ((GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Location) <> 0) _
+                  AndAlso Not Location.Length = 0 Then
                 sb.Append(Localization.GetString("Location", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(Location)
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.CreatedDate.ToString)) Then
+            If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.CreatedDate) <> 0 Then
                 sb.Append(Localization.GetString("CreatedDate", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(CreatedDate.ToShortDateString)
                 sb.Append("<br />")
             End If
 
-            If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.ApprovedDate.ToString)) Then
+            If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.ApprovedDate) <> 0 Then
                 sb.Append(Localization.GetString("ApprovedDate", GalleryConfig.SharedResourceFile))
                 sb.Append(" ")
                 sb.Append(Utils.DateToText(ApprovedDate)) 'WES - show DateTime.MaxValue as empty string

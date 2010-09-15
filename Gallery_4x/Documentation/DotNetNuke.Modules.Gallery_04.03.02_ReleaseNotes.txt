@@ -1,6 +1,52 @@
 MODULE: DotNetNuke.Modules.Gallery (MediaGallery) Module
-Version: 04.03.00
+Version: 04.03.02
 Minimum DNN Version: 04.09.03
+
+Version 04.03.02
+----------------
+The following issues pertaining to running under DNN 5.5.x and later as well as fixes for several other minor issues are addressed:
+
+1.  Duplicate key violation in table Folders logged upon each application restart or Gallery cache rebuilt due to change in behavior of core AddFolder method in DNN 5.05.00.
+2.  Failure to add child album due to same exception as #1 above.
+3.  The number of icon and watermark files was being included in the unapproved file count
+4.  The number of unapproved files is now displayed only for the admin user and gallery/album owner.
+5.  When running under medium trust an exception was being logged the configuration control was accessing information in the system.web/httpRuntime node of the web.config
+6.  Unchecking all entries in the Text Display checkbox list of the configuration page would revert back to displaying the Name field. Also added options for hiding/displaying the Size, Title, Description fields
+    and refactored code to more efficiently use a bit-mapped enum rather than an array list of strings when determining what fields to display as the gallery is rendered.
+7.  Added .jpeg (as alternative to .jpg) extension to allowable image file extensions.
+8.  Added .mp4 and .m4v to allowable movie file extensions and added support for playback of both formats (using QuickTime plug-in) in ControlMedia.ascx.
+    NOTE: If you allow .mp4 and .m4v as a movie file extension, you MUST also add their respective mime types to IIS configuration:
+      .mp4 = "video/mp4"
+      .mv4 = "video/x-mv4
+9.  Comma in filename results in broken thumbnail image as the comma character is not properly encoded (to '%2C') when using UrlEncode. Must replace comma with escape code manually.
+10. View and Sort drop-down list controls located in top row of gallery container would wrap to next line when viewed in Google Chrome.
+11. When host had specified a portal space limit of greater than 2 GB, an arithmatic overflow exception was thrown on any attempt to upload a file to the Gallery. Fixed by explicit cast of operands in formular used
+    to calculate available space to long integers.
+12. Child album names including unicode characters (umlauts, etc.) could be added to gallery album without error but when adding a file to such an album and performing other file edit/maintenance operations, the file would be
+    added to the parent of the child album.
+13. Maximum File Size help icon and help text was not being displayed due to misspelling in the localization key.
+14. Adjusted gallery rendering code in Standard view and css stylesheets of all themes to collapse space reserved for borders around each thumbnail when the theame did not define a border in the theme's stylesheet.
+15. Adjusted thumbnail image alignment via css change in Standard view to better center image within the thumbnail border.
+16. Because of project teams plan to no longer support the 4.x line of Gallery module after the 04.03.02 release and the development of a Gallery 5 being designed and built from scratch, no fixes relating to lack of 100% XHTML compliancy
+    are included in this release. Major areas of non-compliance are in-line style attributes being applied as gallery controls are rendered in custom server control code.
+17. Updated copyright date of all files.
+
+Version 04.03.01
+----------------
+The following issues pertaining to running under ASP.Net 4.0 in DNN 5.4.x are addressed:
+
+1. Invalid (and unnecessary) assembly:tagPrefix in Views\ControlTemplateList.vb causing failure of DNN 5.4 installation.
+2. Missing closing quote of inline style in Settings.ascx causing parse exception when opening Configuration.
+3. Missing single quotes around urls in src attribute in Utilities.vb causing opening of Album Edit/File Upload parse exception.
+4. Misspelling of style (syle) in markup of localization in ControlUpload.ascx.resx causing opening of File Upload parse exception.
+5. AlternateText attribute of """" in ControlUpload.ascx causing opening of File Upload parse exception.
+6. Opening PopupMultiSelect.aspx or PopupSingleSelect.aspx used for selection of Download Roles and Album/Gallery owner throws null-reference exception and failure of popup to open. Try/Catch block removal in 5.4.0 core method AJAX.AddScriptManager revealed existing problem with having non-DotNetNuke aspx pages inherit from DotNetNuke.Framework.PageBase. Removed inheritance and revised code behind of both pop-up pages.
+7. ASP.Net 3.5 rendered style="border-width:0" on image tags when set as ImageUrl of a hyperlink control. ASP.Net 4.0 no longer renders that attribute causing ugly border to appear around toolbar icons in Viewer.ascx. Added css class to surrounding <td> and new css selector to css style sheets in all 4 themes to remove border.
+
+No other fixes or enhancements are included in this release.
+
+Version 04.03.00
+----------------
 
 Known Issues
 ------------
@@ -9,6 +55,15 @@ XHTML: This version of the Gallery Module is not 100% XHTML compliant. Remaining
 WEBFARM Support: Some cache issues may arise when Gallery is used in a webfarm. We have not been able to test the scenario and it is not recommended to use the module in a production environment where DotNetNuke is installed in a webfarm. 
 
 TIMEOUT ON FIRST VISIT AFTER INSTALL: Upon visiting a pre-existing v 3 Gallery module for the first time following an upgrade to version 04.03.00, the user may experience a timeout if the existing Gallery contains a large number of image files. This is due to the new version's need to add entries for each image (source, preview and thumb) contained in the Gallery to the DNN core Files table. As part of that addition process, the dimensions of each image need to be determined from the bitmapped data contained in the file - an expensive operation in terms of processing time. The work around is to increase the value of the executionTimeout attribute in the httpRuntime section of the site's web.config from its default 110 seconds to a significantly large value prior to the upgrade. Following the upgrade, the value may be returned to its previous or default setting.
+
+Media filenames may not begin with an underscore character as this denotes a special Gallery file.
+
+Child album/folder names must not include any uni-code characters such as umlauts.
+
+Watermark and custom album cover image files will show in the "unapproved" file count but this will not affect use of the Gallery.
+
+If a portal disk space is set larger than 2 GB by the host, an error will be thrown preventing file upload when a non-zero (default) gallery quota has also been
+specified in the gallery configuration.
 
 What's new in this version
 --------------------------
@@ -65,4 +120,4 @@ Note To Developers Regarding Gallery Source Package
 The Gallery module was developed as a Web Application Project in VS 2008 located in a folder outside of the usual DesktopModules\<ModuleName> folder and built and packaged using a custom MS Build targets file including several MS Build Community Tasks. If you will be installing and continuing development using the source package, please read and carefully follow the "DNN Gallery Module Developement Environment Setup" Word document contained in the package's Documents folder BEFORE installing the source package.
 
 
-For a complete list of bug fixes, enhancements and other changes please visit the Gallery Project Bug Tracker at http://support.dotnetnuke.com
+For a complete list of bug fixes, enhancements and other changes please visit the Gallery Project Issues Tracker at http://dnngallery.codeplex.com

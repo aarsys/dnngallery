@@ -537,6 +537,12 @@ TD.Gallery_Image, .Gallery_Image
 	margin-right: auto;
 }
 
+.MediaMenu_Thumbnail img 
+{
+    margin-left: 2px;
+    margin-top: 2px;
+}
+
 /* .MediaMenu_MenuContainer {
 	background-color: #e9e9e9;
 	margin-top: 2px;
@@ -634,4 +640,9 @@ HR {
     padding-top: 4px;
     background: url('images/m_Back.gif') no-repeat center center;
 }
+
+/* added to remove border when img elements rendered in ASP.Net 4.0 */
+
+td.ToolBar img {border-width: 0}
+
 

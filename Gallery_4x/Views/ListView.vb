@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -124,9 +124,8 @@ Namespace DotNetNuke.Modules.Gallery.Views
 
                 wr.RenderEndTag() ' td
 
-                wr.AddAttribute(HtmlTextWriterAttribute.Align, "left")
-                'wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_RowHeader")
-                wr.AddAttribute(HtmlTextWriterAttribute.Width, "100%")
+                wr.AddAttribute(HtmlTextWriterAttribute.Align, "right")
+                wr.AddStyleAttribute("white-space", "nowrap")
                 wr.RenderBeginTag(HtmlTextWriterTag.Td) ' column for commands
 
                 RenderCommand(wr, item)
@@ -182,27 +181,34 @@ Namespace DotNetNuke.Modules.Gallery.Views
                 Dim GalleryConfig As Config
                 GalleryConfig = DotNetNuke.Modules.Gallery.Config.GetGalleryConfig(GalleryControl.ModuleId)
 
-                If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Name.ToString)) Then
-                    RenderItemInfo(wr, GalleryControl.LocalizedText("Name"), item.Name)
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Name) <> 0 Then
+                    Dim sb As New StringBuilder(item.Name)
+                    If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Size) <> 0 Then
+                        sb.Append(" ")
+                        Dim sizeInfo As String = Localization.GetString("FileSizeInfo", GalleryConfig.SharedResourceFile)
+                        sizeInfo = sizeInfo.Replace("[FileSize]", Math.Ceiling(item.Size / 1024).ToString)
+                        sb.Append(sizeInfo)
+                    End If
+                    RenderItemInfo(wr, GalleryControl.LocalizedText("Name"), sb.ToString)
                 End If
 
-                If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Author.ToString)) Then 'AndAlso item.Author.Length > 0 Then
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Author) <> 0 Then
                     RenderItemInfo(wr, GalleryControl.LocalizedText("Author"), item.Author)
                 End If
 
-                If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Client.ToString)) Then 'AndAlso item.Client.Length > 0 Then
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Client) <> 0 Then
                     RenderItemInfo(wr, GalleryControl.LocalizedText("Client"), item.Client)
                 End If
 
-                If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.Location.ToString)) Then 'AndAlso item.Location.Length > 0 Then
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Location) <> 0 Then
                     RenderItemInfo(wr, GalleryControl.LocalizedText("Location"), item.Location)
                 End If
 
-                If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.CreatedDate.ToString)) Then 'Then
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.CreatedDate) <> 0 Then 'Then
                     RenderItemInfo(wr, GalleryControl.LocalizedText("CreatedDate"), item.CreatedDate.ToString)
                 End If
 
-                If GalleryConfig.TextDisplay.Contains(LCase(Config.GalleryDisplayOption.ApprovedDate.ToString)) Then 'Then
+                If (GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.ApprovedDate) <> 0 Then 'Then
                     RenderItemInfo(wr, GalleryControl.LocalizedText("ApprovedDate"), DateToText(item.ApprovedDate)) 'WES - convert DateTime.MaxValue to empty string
                 End If
 
@@ -248,7 +254,8 @@ Namespace DotNetNuke.Modules.Gallery.Views
                 wr.AddAttribute(HtmlTextWriterAttribute.Valign, "top")
                 wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_Row")
                 wr.RenderBeginTag(HtmlTextWriterTag.Td) ' td for description               
-                If item.Description.Length > 0 Then
+                If ((GalleryConfig.TextDisplayOptions And Config.GalleryDisplayOption.Description) <> 0) _
+                      AndAlso item.Description.Length > 0 Then
                     wr.Write(item.Description)
                 Else
                     wr.Write("&nbsp;")

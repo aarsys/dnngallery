@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -22,16 +22,15 @@ Option Strict On
 
 Imports System.Web
 Imports DotNetNuke
-Imports DotNetNuke.Entities.Portals
-Imports DotNetNuke.Services.Localization
-Imports DotNetNuke.Entities.Modules.PortalModuleBase
 
 Namespace DotNetNuke.Modules.Gallery.PopupControls
 
-    Partial Class PopupSelectSingle
-        Inherits DotNetNuke.Framework.PageBase
+    Partial Public Class PopupSelectSingle
+        Inherits PopupPageBase
+        'Inherits DotNetNuke.Framework.PageBase
         '' Change Inherits from System.Web.UI.Page to DNN.Framework.PageBase by M. Schlomann
-        Protected WithEvents ctlSearch As DotNetNuke.Modules.Gallery.PopupControls.PopupSearch
+
+        'Protected WithEvents ctlSearch As DotNetNuke.Modules.Gallery.PopupControls.PopupSearch
 
         Public PageTitle As String = ""
         Public btnOK As String = ""
@@ -61,8 +60,9 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
 
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             'Put user code to initialize the page here
-            Dim _portalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
-            ctlSearch.PortalID = _portalSettings.PortalId 'PortalSettings.PortalId
+
+            ctlSearch.PortalID = PortalSettings.PortalId
+
             ' Added Localization by M. Schlomann
             PageTitle = Localization.GetString(Request.QueryString("resourcekey") & "Single_Title", LocalResourceFile)
             btnOK = Localization.GetString(Request.QueryString("resourcekey") & "btnOK_text", LocalResourceFile)

@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -288,12 +288,12 @@ Namespace DotNetNuke.Modules.Gallery
         End Function
 
         Public Shared Function FriendlyURLEncode(ByVal Source As String) As String
-            Dim output As String = Source.Replace("/", "!")
+            Dim output As String = HttpUtility.UrlEncodeUnicode(Source).Replace("/", "!")
             Return output
         End Function
 
         Public Shared Function FriendlyURLDecode(ByVal Source As String) As String
-            Dim output As String = Source.Replace("!", "/")
+            Dim output As String = HttpUtility.UrlDecode(Source).Replace("!", "/")
             If output = " " Then
                 output = ""
             End If
@@ -329,21 +329,21 @@ Namespace DotNetNuke.Modules.Gallery
             Dim sb As New System.Text.StringBuilder
 
             sb.Append("<p class=""Normal"">")
-            sb.Append("<img alt='' src=" & GalleryConfig.GetImageURL("s_zip.gif") & " />&nbsp;")
+            sb.Append("<img alt='' src='" & GalleryConfig.GetImageURL("s_zip.gif") & "' />&nbsp;")
             sb.Append("Zip&nbsp;(.zip) ")
-            sb.Append("&nbsp;&nbsp;<img alt='' src=" & GalleryConfig.GetImageURL("s_jpg.gif") & " />&nbsp;")
+            sb.Append("&nbsp;&nbsp;<img alt='' src='" & GalleryConfig.GetImageURL("s_jpg.gif") & "' />&nbsp;")
             sb.Append(Localization.GetString("Image", GalleryConfig.SharedResourceFile))
             '<daniel file extension to use core>
             sb.Append("&nbsp;(" & Replace(GalleryConfig.FileExtensions, ";", ", "))
             If sb.Chars(sb.Length - 1) = "," Then sb.Remove(sb.Length - 1, 1)
             sb.Append(")")
-            sb.Append("&nbsp;&nbsp;<img alt='' src=" & GalleryConfig.GetImageURL("s_mediaplayer.gif") & " />&nbsp;")
+            sb.Append("&nbsp;&nbsp;<img alt='' src='" & GalleryConfig.GetImageURL("s_mediaplayer.gif") & "' />&nbsp;")
             sb.Append(Localization.GetString("Movie", GalleryConfig.SharedResourceFile))
             '<daniel file extension to use core>
             sb.Append("&nbsp;(" & Replace(GalleryConfig.MovieExtensions, ";", ") "))
             If sb.Chars(sb.Length - 1) = "," Then sb.Remove(sb.Length - 1, 1)
             sb.Append(")")
-            sb.Append("&nbsp;&nbsp;<img alt='' src=" & GalleryConfig.GetImageURL("s_flash.gif") & " />&nbsp;")
+            sb.Append("&nbsp;&nbsp;<img alt='' src='" & GalleryConfig.GetImageURL("s_flash.gif") & "' />&nbsp;")
             sb.Append(Localization.GetString("Flash", GalleryConfig.SharedResourceFile))
             sb.Append("&nbsp;(.swf)</p><p class=""Normal"">")
             sb.Append(Localization.GetString("MaxFileSize", GalleryConfig.SharedResourceFile))

@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2009 by DotNetNuke Corp. 
+' Copyright (c) 2002-2010 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -36,7 +36,7 @@ Namespace DotNetNuke.Modules.Gallery
     <Serializable()> Public Class GalleryUserRequest
         Inherits GalleryRequest
 
-        Private mRemovedItems As Integer
+        'Private mRemovedItems As Integer
         Private mStripCount As Integer
         Private mEndItem As Integer
         Private mPagerItems As New ArrayList
@@ -65,11 +65,13 @@ Namespace DotNetNuke.Modules.Gallery
             End Get
         End Property
 
-        Public ReadOnly Property RemoveItems() As Integer
-            Get
-                Return mRemovedItems
-            End Get
-        End Property
+        ''William Severance (9/11/10) - Property no longer referenced from other code
+
+        ''Public ReadOnly Property RemoveItems() As Integer
+        ''    Get
+        ''        Return mRemovedItems
+        ''    End Get
+        ''End Property
 
         Public Overrides ReadOnly Property StripCount() As Integer
             Get

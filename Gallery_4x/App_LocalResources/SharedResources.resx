@@ -477,4 +477,13 @@
   <data name="UploadFile_ResizeSaveError.Text" xml:space="preserve">
     <value>An error occured while attempting to resize and/or save the uploaded file {0}</value>
   </data>
+  <data name="Description.Text" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Size.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="Title.Text" xml:space="preserve">
+    <value>Title</value>
+  </data>
 </root>

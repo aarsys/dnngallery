@@ -5,7 +5,7 @@
 			<asp:label id="Title" runat="server" cssclass="Gallery_HeaderText"></asp:label></td>
 	</tr>
 	<tr>
-		<td class="Gallery_Row" valign="middle" align="center" style="height:22px">
+		<td class="Gallery_Row ToolBar" valign="middle" align="center" style="height:22px">
 			<asp:hyperlink id="MovePrevious" runat="server"></asp:hyperlink>&nbsp;
 			<asp:hyperlink id="MoveNext" runat="server"></asp:hyperlink>&nbsp;
 			<asp:hyperlink id="ZoomOut" runat="server"></asp:hyperlink>&nbsp;

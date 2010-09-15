@@ -71,7 +71,8 @@
                              **\*.pdb;
                              **\_sgbak\**\*.*;
                              **\*.tmp;
-                             **\bin\*.*">
+                             **\bin\*.*;
+                             **\.svn\**\*.*">
             <Output TaskParameter="Include" ItemName="DefaultExclude" />
         </CreateItem>
 
