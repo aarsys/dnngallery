@@ -134,33 +134,32 @@ Namespace DotNetNuke.Modules.Gallery.Views
                             wr.RenderEndTag() ' tr thumb
 
                             'voting
-                            If Me.mGalleryConfig.AllowVoting Then
+                            If Me.mGalleryConfig.AllowVoting AndAlso Not item.IsFolder Then
                                 wr.RenderBeginTag(HtmlTextWriterTag.Tr) ' voting
                                 wr.AddAttribute(HtmlTextWriterAttribute.Valign, "middle")
                                 wr.AddAttribute(HtmlTextWriterAttribute.Align, "center")
                                 wr.AddAttribute(HtmlTextWriterAttribute.Height, "24px")
                                 wr.RenderBeginTag(HtmlTextWriterTag.Td)
 
-                                If Not item.IsFolder Then
-                                    Dim voteInfo As String = GalleryControl.LocalizedText("VoteInfo")
-                                    voteInfo = voteInfo.Replace("[VoteValue]", item.Score.ToString)
-                                    voteInfo = voteInfo.Replace("[VoteCount]", file.Votes.Count.ToString)
+                                'If Not item.IsFolder Then
+                                Dim voteInfo As String = GalleryControl.LocalizedText("VoteInfo")
+                                voteInfo = voteInfo.Replace("[VoteValue]", item.Score.ToString)
+                                voteInfo = voteInfo.Replace("[VoteCount]", file.Votes.Count.ToString)
 
-                                    If mGalleryAuthorize.ItemCanVote(item) Then
-                                        'William Severance - Modified to append CurrentStrip parameter to URL
-                                        RenderImageButton(wr, AppendURLParameter(item.VotingURL, "currentstrip=" & mUserRequest.CurrentStrip.ToString), item.ScoreImageURL, voteInfo, "")
-                                        'RenderImageButton(wr, item.VotingURL, item.ScoreImageURL, voteInfo, "")
-                                    Else
-                                        RenderImage(wr, item.ScoreImageURL, voteInfo, "")
-                                    End If
+                                If mGalleryAuthorize.ItemCanVote(item) Then
+                                    'William Severance - Modified to append CurrentStrip parameter to URL
+                                    RenderImageButton(wr, AppendURLParameter(item.VotingURL, "currentstrip=" & mUserRequest.CurrentStrip.ToString), item.ScoreImageURL, voteInfo, "")
+                                    'RenderImageButton(wr, item.VotingURL, item.ScoreImageURL, voteInfo, "")
                                 Else
-                                    wr.Write("&nbsp;")
+                                    RenderImage(wr, item.ScoreImageURL, voteInfo, "")
                                 End If
+                                'Else
+                                '    wr.Write("&nbsp;")
+                                'End If
 
                                 wr.RenderEndTag() ' td voting
                                 wr.RenderEndTag() ' tr voting
                             End If 'If mGalleryAuthorize.ItemCanVote(item) Then
-
 
                             If (mGalleryConfig.TextDisplayOptions And GalleryDisplayOption.Title) <> 0 Then
                                 wr.RenderBeginTag(HtmlTextWriterTag.Tr) ' title

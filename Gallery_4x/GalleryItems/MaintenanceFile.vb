@@ -181,10 +181,9 @@ Namespace DotNetNuke.Modules.Gallery
         End Sub
 
         Public Sub CreateFileFromSource()
-            Dim height As Integer = mParent.GalleryConfig.FixedHeight
-            Dim width As Integer = mParent.GalleryConfig.FixedWidth
-            ResizeImage(mSourcePath, mAlbumPath, width, height)
-
+            With mParent.GalleryConfig
+                ResizeImage(mSourcePath, mAlbumPath, .FixedWidth, .FixedHeight, .EncoderQuality)
+            End With
         End Sub
 
         Public Sub DeleteAll()
@@ -203,11 +202,10 @@ Namespace DotNetNuke.Modules.Gallery
         End Sub
 
         Public Sub CreateThumbnail()
-            Dim thumbHeight As Integer = mParent.GalleryConfig.MaximumThumbHeight
-            Dim thumbWidth As Integer = mParent.GalleryConfig.MaximumThumbWidth
-
             If mFileExists Then
-                ResizeImage(mAlbumPath, mThumbPath, thumbWidth, thumbHeight)
+                With mParent.GalleryConfig
+                    ResizeImage(mAlbumPath, mThumbPath, .MaximumThumbWidth, .MaximumThumbHeight, .EncoderQuality)
+                End With
                 ThumbExists = True
             End If
         End Sub

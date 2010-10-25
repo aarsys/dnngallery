@@ -145,7 +145,7 @@
     <value>Notes:</value>
   </data>
   <data name="plClient.Help" xml:space="preserve">
-    <value>General purpose field which can be changed via localization files.&lt;br /&gt;&lt;b&gt;Tip&lt;/b&gt;&lt;br /&gt;This can also be turned off in the gallery configuration by not selecting it under Display Info.</value>
+    <value>General purpose field whose displayed name may changed via localization files.&lt;br /&gt;&lt;b&gt;Tip&lt;/b&gt;&lt;br /&gt;This can also be turned off in the gallery configuration by not selecting it under Display Info.</value>
   </data>
   <data name="plLocation.Text" xml:space="preserve">
     <value>Location:</value>

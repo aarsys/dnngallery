@@ -201,12 +201,12 @@ Namespace DotNetNuke.Modules.Gallery
             params.Add("returnctl=" & ReturnCtl)
 
             ' Next button to edit next image in this gallery
-            params.Add("currentitem=" & mRequestViewer.NextItem.ToString)
+            params.Add("currentitem=" & mRequestViewer.NextItemNumber.ToString)
             url = NavigateURL(TabId, "FileEdit", params.ToArray())
             cmdMoveNext.NavigateUrl = url
 
             ' Previous button to edit previous image in this gallery
-            params(params.Count - 1) = "currentitem=" & mRequestViewer.PreviousItem.ToString
+            params(params.Count - 1) = "currentitem=" & mRequestViewer.PreviousItemNumber.ToString
             url = NavigateURL(TabId, "FileEdit", params.ToArray())
             cmdMovePrevious.NavigateUrl = url
 

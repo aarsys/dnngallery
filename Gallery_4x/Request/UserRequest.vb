@@ -30,6 +30,7 @@ Imports DotNetNuke.Common.Globals
 Imports DotNetNuke.services.Localization
 Imports DotNetNuke.Modules.Gallery.Config
 Imports DotNetNuke.Modules.Gallery.Utils
+Imports System.Collections.Generic
 
 Namespace DotNetNuke.Modules.Gallery
 
@@ -40,7 +41,7 @@ Namespace DotNetNuke.Modules.Gallery
         Private mStripCount As Integer
         Private mEndItem As Integer
         Private mPagerItems As New ArrayList
-        Private mSortList As New ArrayList
+        Private mSortList As List(Of IGalleryObjectInfo)
 
 
         Public Sub New(ByVal ModuleID As Integer)
@@ -59,7 +60,7 @@ Namespace DotNetNuke.Modules.Gallery
 
         End Sub
 
-        Public ReadOnly Property SortList() As ArrayList
+        Public ReadOnly Property SortList() As List(Of IGalleryObjectInfo)
             Get
                 Return mSortList
             End Get
@@ -155,7 +156,8 @@ Namespace DotNetNuke.Modules.Gallery
                         newPagerDetail.URL = url
                         mPagerItems.Add(newPagerDetail)
                     Else
-                        If ((intCounter = 3) OrElse (intCounter = mStripCount - 2)) Then
+                        'If ((intCounter = 3) OrElse (intCounter = mStripCount - 2)) Then
+                        If (intCounter = displayPage + 2) OrElse (intCounter = displayPage - 2) Then
                             newPagerDetail = New PagerDetail
                             newPagerDetail.Strip = intCounter
                             newPagerDetail.Text = "..."

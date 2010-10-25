@@ -71,8 +71,11 @@ DesktopModules\Gallery\Documentation\Gallery_4.3.0_ReleaseNotes.txt
 DesktopModules\Gallery\Documentation\Gallery_4.3.0_TestCases.txt
 DesktopModules\Gallery\Documentation\DotNetNuke.Modules.Gallery_04.03.01_ReleaseNotes.txt
 DesktopModules\Gallery\Documentation\DotNetNuke.Modules.Gallery_04.03.01_TestCases.txt
+DesktopModules\Gallery\Documentation\DotNetNuke.Modules.Gallery_04.03.02_ReleaseNotes.txt
+DesktopModules\Gallery\Documentation\DotNetNuke.Modules.Gallery_04.03.02_TestCases.txt
 DesktopModules\Gallery\04.03.00.txt
 DesktopModules\Gallery\04.03.01.txt
+DesktopModules\Gallery\04.03.02.txt
 Install\Module\Gallery_03.00.11_Install.zip
 Install\Module\Gallery_03.00.11_Install.resources
 Install\Module\Gallery_3.0.12_Install.zip

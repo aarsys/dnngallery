@@ -36,7 +36,7 @@
 						<td class="Gallery_Row" align="left" style="height:43px"><asp:textbox id="txtName" runat="server" Enabled="False" CssClass="NormalTextBox" Width="95%"></asp:textbox>
                             <asp:Label ID="lblAlbumName" runat="server" CssClass="Normal" ForeColor="Red"></asp:Label>
                             <asp:RequiredFieldValidator ID="rqdFieldValidatorTxtName" runat="server" ControlToValidate="txtName" CssClass="NormalRed" ResourceKey="rqdFieldValidatorTxtName.ErrorMessage" Display="Dynamic"></asp:RequiredFieldValidator>
-                            <asp:RegularExpressionValidator ID="validateCharacters4txtName" runat="server" ControlToValidate="txtName" CssClass="NormalRed" ResourceKey="validateCharacters4txtName.ErrorMessage" Display="Dynamic" ValidationExpression='^[a-zA-Z0-9][^\000-\037\\/:*?"><|&]*$'></asp:RegularExpressionValidator></td>
+                            <asp:RegularExpressionValidator ID="validateCharacters4txtName" runat="server" ControlToValidate="txtName" CssClass="NormalRed" ResourceKey="validateCharacters4txtName.ErrorMessage" Display="Dynamic" ValidationExpression='^[a-zA-Z0-9][^\000-\037\\/:*?!"><|&]*$'></asp:RegularExpressionValidator></td>
 					</tr>
 					<tr>
 						<td class="Gallery_SubHeader" style="width:120px"><dnn:label id="plTitle" text="Title:" Runat="server" resourcekey="plTitle" controlname="txtTitle"></dnn:label></td>

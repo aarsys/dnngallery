@@ -341,7 +341,11 @@ Namespace DotNetNuke.Modules.Gallery
 
         Public ReadOnly Property SlideshowURL() As String Implements IGalleryObjectInfo.SlideshowURL
             Get
-                Return Parent.SlideshowURL()
+                If mGalleryConfig.AllowPopup Then
+                    Return GetPopupSlideshowURL()
+                Else
+                    Return GetSlideshowURL()
+                End If
             End Get
         End Property
 
@@ -490,7 +494,7 @@ Namespace DotNetNuke.Modules.Gallery
                 File.Delete(ThumbnailPath)
                 NewImage.Save(Path, iFormat)
                 Utils.SaveDNNFile(Path, NewImage.Width, NewImage.Height, False, True)
-                ResizeImage(Me.Path, Me.ThumbnailPath, GalleryConfig.MaximumThumbWidth, GalleryConfig.MaximumThumbHeight)
+                ResizeImage(Me.Path, Me.ThumbnailPath, GalleryConfig.MaximumThumbWidth, GalleryConfig.MaximumThumbHeight, GalleryConfig.EncoderQuality)
             Catch exc As Exception
                 Throw
             End Try
@@ -500,7 +504,7 @@ Namespace DotNetNuke.Modules.Gallery
         Public Sub RestoreImage()
             If Not Me.Type = Config.ItemType.Image Then Exit Sub
             Try
-                ResizeImage(Me.SourcePath, Me.Path, GalleryConfig.FixedWidth, GalleryConfig.FixedHeight)
+                ResizeImage(Me.SourcePath, Me.Path, GalleryConfig.FixedWidth, GalleryConfig.FixedHeight, GalleryConfig.EncoderQuality)
             Catch ex As Exception
             End Try
         End Sub
@@ -576,11 +580,23 @@ Namespace DotNetNuke.Modules.Gallery
         End Function
 
         Private Function GetSlideshowURL() As String
-            Return Parent.SlideshowURL
+            If mType <> Config.ItemType.Image Then
+                Return Parent.SlideshowURL
+            Else
+                Dim params As New Generic.List(Of String)
+                params.Add("mid=" & GalleryConfig.ModuleID.ToString)
+                If Not String.IsNullOrEmpty(Parent.GalleryHierarchy) Then
+                    params.Add("path=" & FriendlyURLEncode(Parent.GalleryHierarchy))
+                End If
+                params.Add("currentitem=" & Index.ToString)
+
+                Dim ctlKey As String = "SlideShow"
+                Return NavigateURL(GalleryConfig.GalleryTabID, ctlKey, params.ToArray())
+            End If
         End Function
 
         Private Function GetPopupSlideshowURL() As String
-            Return Parent.SlideshowURL
+            Return GetSlideshowURL()
         End Function
 
         Private Function GetExifURL() As String

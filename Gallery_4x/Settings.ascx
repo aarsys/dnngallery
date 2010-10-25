@@ -144,6 +144,13 @@
 					</tr>
 					<tr>
 						<td class="Gallery_RowPanel" style="width:220px; height:24px">&nbsp;
+							<dnn:label id="plEncoderQuality" runat="server" text="JPEG Encoder Quality:" controlname="txtEncoderQuality"></dnn:label></td>
+						<td class="Gallery_Row" align="left"><asp:textbox id="txtEncoderQuality" runat="server" cssclass="NormalTextBox" width="75px" columns="26"></asp:textbox>&nbsp;<asp:RequiredFieldValidator id="valEncoderQuality1" runat="server" cssclass="NormalRed" resourcekey="RequiredField.ErrorMessage"
+								controltovalidate="txtEncoderQuality" Display="Dynamic" errormessage="Value cannot be blank"></asp:RequiredFieldValidator><asp:RangeValidator ID="valEncoderQuality2" runat="server" cssclass="NormalRed" ControlToValidate="txtEncoderQuality" Display="Dynamic"
+								ErrorMessage="Must be integer >= 10 and <= 100" Type="Integer" MinimumValue="10" MaximumValue="100" resourcekey="NumericValueGE10LE100.ErrorMessage"></asp:RangeValidator></td>
+					</tr>
+					<tr>
+						<td class="Gallery_RowPanel" style="width:220px; height:24px">&nbsp;
 							<dnn:label id="plDisplay" runat="server" text="Display Info:" controlname="lstDisplay"></dnn:label></td>
 						<td class="Gallery_Row" align="left"><asp:checkboxlist id="lstDisplay" runat="server" style="width:100%" font-size="8pt" font-names="Verdana,Arial"
 								repeatcolumns="1"></asp:checkboxlist></td>

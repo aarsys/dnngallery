@@ -34,8 +34,9 @@ Namespace DotNetNuke.Modules.Gallery
 
         'added by Tam - to avoid images have low-resolution after resize using CreateThumb
         'WES - interfaced with DNN file system and changed sub to integer to return DNN FileID
+        'WES - added parameter for JPEG compression level (EncoderQuality)
 
-        Public Function ResizeImage(ByVal Source As String, ByVal Destination As String, ByVal MaxWidth As Integer, ByVal MaxHeight As Integer) As Integer
+        Public Function ResizeImage(ByVal Source As String, ByVal Destination As String, ByVal MaxWidth As Integer, ByVal MaxHeight As Integer, ByVal EncoderQuality As Long) As Integer
             Dim lWidth, lHeight As Integer
             Dim sRatio As Single
             Dim mImage As System.Drawing.Image = Nothing
@@ -61,13 +62,13 @@ Namespace DotNetNuke.Modules.Gallery
                     newImage = New Bitmap(FixedSize(mImage, lWidth, lHeight))
                     mImage.Dispose()
                     mImage = Nothing
-                    newImage.Save(Destination, iFormat)
+                    SaveImage(newImage, Destination, iFormat, EncoderQuality)
                 Else
                     'Added intermediate image to allow save to Destination = Source
                     newImage = New Bitmap(mImage)
                     mImage.Dispose()
                     mImage = Nothing
-                    newImage.Save(Destination, iFormat)
+                    SaveImage(newImage, Destination, iFormat, EncoderQuality)
                 End If
 
                 'William Severance - added to interface with DNN file system
@@ -82,6 +83,43 @@ Namespace DotNetNuke.Modules.Gallery
 
             Return fileID
         End Function
+
+        Public Sub SaveImage(ByVal src As System.Drawing.Image, ByVal Destination As String, ByVal Format As Imaging.ImageFormat, ByVal EncoderQuality As Long)
+            Select Case Path.GetExtension(Destination).ToLower
+                Case ".jpg", "jpeg"
+                    SaveJPEG(src, EncoderQuality, Destination)
+                Case Else
+                    src.Save(Destination, Format)
+            End Select
+        End Sub
+
+        'Return an ImageCodecInfo object for the image/jpeg mime type
+        Private Function GetJpegCodec() As ImageCodecInfo
+            'Setup a JPEG codec
+            For Each Codec As ImageCodecInfo In ImageCodecInfo.GetImageEncoders
+                If Codec.MimeType = "image/jpeg" Then
+                    Return Codec
+                End If
+            Next 'Supposedly this cannot fail as image/jpg is built-in to GDI+ encoders
+            Return Nothing
+        End Function
+
+        'Return the EncoderParameters object for JPEG encoding having a specified EncoderQuality
+        Private Function GetJPegEncoderQualityParameters(ByVal EncoderQuality As Long) As EncoderParameters
+            Dim EncParams As EncoderParameters = New EncoderParameters(1)
+            EncParams.Param(0) = New EncoderParameter(System.Drawing.Imaging.Encoder.Quality, EncoderQuality)
+            Return EncParams
+        End Function
+
+        'Saves a JPEG image src to the supplied stream with specified encoder quality
+        Public Sub SaveJPegImage(ByVal src As Image, ByVal EncoderQuality As Long, ByVal stream As Stream)
+            src.Save(stream, GetJpegCodec, GetJPegEncoderQualityParameters(EncoderQuality))
+        End Sub
+
+        'Saves a JPEG image src to the specified destination filepath with specified encoder quality
+        Public Sub SaveJPEG(ByVal src As Image, ByVal EncoderQuality As Long, ByVal Destination As String)
+            src.Save(Destination, GetJpegCodec, GetJPegEncoderQualityParameters(EncoderQuality))
+        End Sub
 
         ' Code by Kenneth Courtney: using Bicubic Rescaling
         Private Function FixedSize(ByVal imgPhoto As Image, ByVal Width As Integer, ByVal Height As Integer) As Image
@@ -157,7 +195,7 @@ Namespace DotNetNuke.Modules.Gallery
             grWatermark.DrawImage(Watermark, New Rectangle(xPosOfWm, yPosOfWm, wmWidth, wmHeight), 0, 0, wmWidth, wmHeight, GraphicsUnit.Pixel, imageAttributes)
 
             Return bmWatermark
-            'Image = bmWatermark
+
         End Function 'DrawWatermark
 
         Public Function GetContentType(ByVal iFormat As ImageFormat) As String

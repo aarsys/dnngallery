@@ -10,7 +10,9 @@
 				document.images.SlideShow.filters.blendTrans.Apply();
 			}
 			document.images.SlideShow.src = preLoad[j].src;
-			if (document.getElementById) document.getElementById("TitleBox").innerHTML=Title[j].replace("^", "'");
+			var title = Title[j].replace("^", "'");
+			document.title = baseTitle + " > " + title;
+			if (document.getElementById) document.getElementById("TitleBox").innerHTML = title;
 			if (document.getElementById) document.getElementById("CaptionBox").innerHTML=Description[j].replace("^", "'");
 			if (document.all){
 				document.images.SlideShow.filters.blendTrans.Play();

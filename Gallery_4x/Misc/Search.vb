@@ -22,11 +22,13 @@ Option Strict On
 Imports System
 Imports DotNetNuke
 Imports DotNetNuke.Services.Search
+Imports DotNetNuke.Entities.Modules
 
 Namespace DotNetNuke.Modules.Gallery
 
     Public Class Controller
-        Implements Entities.Modules.ISearchable
+        Implements ISearchable
+        Implements IUpgradeable
 
         Private Const MAX_DESCRIPTION_LENGTH As Integer = 100
 
@@ -58,8 +60,48 @@ Namespace DotNetNuke.Modules.Gallery
                     PopulateSearch(CType(folder, GalleryFolder), SearchCollection)
                 End If
             Next
-
         End Sub
 
+        Public Function UpgradeModule(ByVal Version As String) As String Implements Entities.Modules.IUpgradeable.UpgradeModule
+            Dim Result As String = Version
+            If Version = "04.03.03" Then
+                'Truncate the value of setting RootURL for all instances of the module to be relative to the portal's
+                'home directory as fix to invalid RootURL when migrating site to a new url
+
+                Dim dmc As New DesktopModuleController
+                Dim dmi As DesktopModuleInfo = dmc.GetDesktopModuleByModuleName("DNN_Gallery")
+                If dmi Is Nothing Then
+                    Result &= " - Upgrade module(v 04.03.03) failure - unable to obtain DesktopModuleID for module name DNN_Gallery"
+                Else
+                    Dim mdc As New Definitions.ModuleDefinitionController
+                    Dim mdi As Definitions.ModuleDefinitionInfo = mdc.GetModuleDefinitionByName(dmi.DesktopModuleID, dmi.FriendlyName)
+                    If mdi Is Nothing Then
+                        Result &= (" - Upgrade module failure - unable to obtain ModuleDefinitionID for module definition friendly name " & dmi.FriendlyName)
+                    Else
+                        Dim mi As ModuleInfo
+                        Dim mc As New ModuleController
+                        Dim rgx As New Regex("^(.*Portals/\d+/)(.+)$", RegexOptions.IgnoreCase)
+                        Dim cntFixed As Integer = 0
+                        Dim cntProcessed As Integer = 0
+                        For Each mi In mc.GetAllModules()
+                            If mi.ModuleDefID = mdi.ModuleDefID Then
+                                Dim settings As Hashtable = mc.GetModuleSettings(mi.ModuleID)
+                                Dim rootURL As String = Utils.GetValue(settings("RootURL"), "")
+                                If rootURL <> "" Then
+                                    Dim rootURLFixed As String = rgx.Replace(rootURL, "$2")
+                                    If rootURLFixed <> rootURL Then
+                                        mc.UpdateModuleSetting(mi.ModuleID, "RootURL", rootURLFixed)
+                                        cntFixed += 1
+                                    End If
+                                    cntProcessed += 1
+                                End If
+                            End If
+                        Next
+                        Result &= String.Format(" - Gallery modules upgraded: {0} of {1}", cntFixed, cntProcessed)
+                    End If
+                End If
+            End If
+            Return Result
+        End Function
     End Class
 End Namespace

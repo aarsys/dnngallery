@@ -78,13 +78,13 @@ Namespace DotNetNuke.Modules.Gallery
         Private mIsPopulated As Boolean
         Private mWatermarkImage As GalleryFile
         Private mList As New GalleryObjectCollection
-        Private mSortList As New ArrayList
+        Private mSortList As New List(Of IGalleryObjectInfo)
 
-        Private mBrowsableItems As ArrayList = New ArrayList
-        Private mMediaItems As ArrayList = New ArrayList
-        Private mFlashItems As ArrayList = New ArrayList
-        Private mIconItems As ArrayList = New ArrayList
-        Private mUnApprovedItems As ArrayList = New ArrayList
+        Private mBrowsableItems As New List(Of Integer)
+        Private mMediaItems As New List(Of Integer)
+        Private mFlashItems As New List(Of Integer)
+        Private mIconItems As New List(Of IGalleryObjectInfo)
+        Private mUnApprovedItems As New List(Of Integer)
 
 #End Region
 
@@ -317,34 +317,34 @@ Namespace DotNetNuke.Modules.Gallery
         End Property
 
         ' Collection of items that can be viewed using the viewer
-        Public ReadOnly Property BrowsableItems() As ArrayList
+        Public ReadOnly Property BrowsableItems() As List(Of Integer)
             Get
                 Return mBrowsableItems
             End Get
         End Property
 
         ' Collection of items that can be played by Media player
-        Public ReadOnly Property MediaItems() As ArrayList
+        Public ReadOnly Property MediaItems() As List(Of Integer)
             Get
                 Return mMediaItems
             End Get
         End Property
 
         ' Collection of items that can be played by flash player
-        Public ReadOnly Property FlashItems() As ArrayList
+        Public ReadOnly Property FlashItems() As List(Of Integer)
             Get
                 Return mFlashItems
             End Get
         End Property
 
         ' These items not to be view in GUI
-        Public ReadOnly Property IconItems() As ArrayList
+        Public ReadOnly Property IconItems() As List(Of IGalleryObjectInfo)
             Get
                 Return mIconItems
             End Get
         End Property
 
-        Public ReadOnly Property UnApprovedItems() As ArrayList
+        Public ReadOnly Property UnApprovedItems() As List(Of Integer)
             Get
                 Return mUnApprovedItems
             End Get
@@ -370,7 +370,7 @@ Namespace DotNetNuke.Modules.Gallery
             End Get
         End Property
 
-        Public ReadOnly Property SortList() As ArrayList
+        Public ReadOnly Property SortList() As List(Of IGalleryObjectInfo)
             Get
                 Return mSortList
             End Get
@@ -578,7 +578,7 @@ Namespace DotNetNuke.Modules.Gallery
         ' GAL-6255
         Public Function ValidateGalleryName(ByVal folderName As String) As Boolean
             ' WES refactored 2-20-09 to use regex with tighter pattern matching re GAL-9402
-            Return Regex.IsMatch(folderName, "^[a-zA-Z0-9][^\000-\037\\/:*?""><|&]*$")
+            Return Regex.IsMatch(folderName, "^[a-zA-Z0-9][^\000-\037\\/:*?!""><|&]*$")
         End Function
 
         'William Severance - modified to interface with DNN file system
@@ -1048,7 +1048,7 @@ Namespace DotNetNuke.Modules.Gallery
                                     Utils.SaveDNNFile(gSourcePath, 0, 0, False, False) 'Add to the DNN files table if we're not deleting the source
                                 End If
                                 If mGalleryConfig.IsFixedSize Then
-                                    gID = ResizeImage(gPath, gPath, mGalleryConfig.FixedWidth, mGalleryConfig.FixedHeight)
+                                    gID = ResizeImage(gPath, gPath, mGalleryConfig.FixedWidth, mGalleryConfig.FixedHeight, mGalleryConfig.EncoderQuality)
                                 Else
                                     gID = SaveDNNFile(gPath, gWidth, gHeight, False, False)
                                 End If
@@ -1075,7 +1075,7 @@ Namespace DotNetNuke.Modules.Gallery
                                 If Not File.Exists(gThumbnailPath) Then
                                     ' Only do resize with valid image, to prevent out of memmory exception
                                     If gSize > 0 Then
-                                        ResizeImage(gItem, gThumbnailPath, mGalleryConfig.MaximumThumbWidth, mGalleryConfig.MaximumThumbHeight)
+                                        ResizeImage(gItem, gThumbnailPath, mGalleryConfig.MaximumThumbWidth, mGalleryConfig.MaximumThumbHeight, mGalleryConfig.EncoderQuality)
                                     Else
                                         ' Mark as invalid and delete invalid images
                                         gValidFile = False

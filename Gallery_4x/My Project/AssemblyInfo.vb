@@ -31,7 +31,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("ASP.NET Open Source Portal Application")> 
 <Assembly: AssemblyCompany("Dotnetnuke Corp.")> 
 <Assembly: AssemblyProduct("http://www.dotnetnuke.com")> 
-<Assembly: AssemblyCopyright("Portal engine source code is copyright 2002-2009 by DotNetNuke Corp. All Rights Reserved")> 
+<Assembly: AssemblyCopyright("Portal engine source code is copyright 2002-2010 by DotNetNuke Corp. All Rights Reserved")> 
 <Assembly: AssemblyTrademark("DotNetNuke")> 
 <Assembly: CLSCompliant(True)> 
 
@@ -45,5 +45,6 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("04.03.02.02")> 
+<Assembly: AssemblyVersion("04.03.03.01")> 
 <Assembly: ComVisibleAttribute(False)> 
+<Assembly: AssemblyFileVersionAttribute("4.3.3.0")> 

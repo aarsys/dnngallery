@@ -168,7 +168,7 @@ Namespace DotNetNuke.Modules.Gallery
                     .UserRequest = mUserRequest
                     '.CurrentAlbum = mUserRequest.Folder
                     '.CurrentItems = mCurrentItems
-
+                    .UserRequest.FolderPaths()
                 End With
 
                 ' Load gallery menu, this method allow call request only once
@@ -186,6 +186,14 @@ Namespace DotNetNuke.Modules.Gallery
                     .GalleryRequest = CType(mUserRequest, BaseRequest)
                 End With
                 celBreadcrumbs.Controls.Add(galleryBreadCrumbs)
+
+                Dim title As String = CType(Page, CDefault).Title
+                For Each itm As FolderDetail In mUserRequest.FolderPaths
+                    If title <> itm.Name Then
+                        title &= (" > " & itm.Name)
+                    End If
+                Next
+                CType(Page, CDefault).Title = title
 
             Catch ex As Exception
                 ' JIMJ Add logging when we can't init things,
@@ -271,19 +279,19 @@ Namespace DotNetNuke.Modules.Gallery
         Private Sub ddlGalleryView_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlGalleryView.SelectedIndexChanged
             mView = CType([Enum].Parse(GetType(Config.GalleryView), ddlGalleryView.SelectedItem.Value), Config.GalleryView)
             RefreshCookie(GALLERY_VIEW, ModuleId, mView)
-            Response.Redirect(SanitizedRawUrl(TabId, ModuleId))
+            Response.Redirect(SanitizedRawUrl(TabId, ModuleId, "", "currentstrip=", Request))
         End Sub
 
         Private Sub ddlGallerySort_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlGallerySort.SelectedIndexChanged
             mSort = CType([Enum].Parse(GetType(Config.GallerySort), ddlGallerySort.SelectedItem.Value), Config.GallerySort)
             RefreshCookie(GALLERY_SORT, ModuleId, mSort)
-            Response.Redirect(SanitizedRawUrl(TabId, ModuleId))
+            Response.Redirect(SanitizedRawUrl(TabId, ModuleId, "", "currentstrip=", Request))
         End Sub
 
         Private Sub chkDESC_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles chkDESC.CheckedChanged
             mSortDESC = chkDESC.Checked
             RefreshCookie(GALLERY_SORT_DESC, ModuleId, mSortDESC)
-            Response.Redirect(SanitizedRawUrl(TabId, ModuleId))
+            Response.Redirect(SanitizedRawUrl(TabId, ModuleId, "", "currentstrip=", Request))
         End Sub
 
         Private Sub ClearCache_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs) Handles ClearCache1.Click, ClearCache2.Click
