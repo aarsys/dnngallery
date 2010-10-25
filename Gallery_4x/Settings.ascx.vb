@@ -128,6 +128,7 @@ Namespace DotNetNuke.Modules.Gallery
                     txtFixedHeight.Enabled = False
                 End If
 
+                txtEncoderQuality.Text = mGalleryConfig.EncoderQuality.ToString
                 txtSlideshowSpeed.Text = mGalleryConfig.SlideshowSpeed.ToString
 
                 'William Severance - added to handle change of IsPrivate checkbox clientside
@@ -358,11 +359,11 @@ Namespace DotNetNuke.Modules.Gallery
                 ' WES: Modified to restrict RootURL to be portal home directory relative
                 Dim homeDirectoryRelativeRootURL As String = Security.InputFilter(RootURL.Text, PortalSecurity.FilterFlag.NoMarkup)
                 homeDirectoryRelativeRootURL = Regex.Replace(homeDirectoryRelativeRootURL, "\.{2,}[\\/]{0,1}|[\000-\037:*?""><|&]", "").Replace("\", "/").Replace("//", "/")
-                Dim pt As Integer = homeDirectoryRelativeRootURL.LastIndexOf(PortalSettings.HomeDirectory, StringComparison.InvariantCultureIgnoreCase)
-                If pt >= 0 Then homeDirectoryRelativeRootURL = homeDirectoryRelativeRootURL.Substring(pt)
+                'Dim pt As Integer = homeDirectoryRelativeRootURL.LastIndexOf(PortalSettings.HomeDirectory, StringComparison.InvariantCultureIgnoreCase)
+                'If pt >= 0 Then homeDirectoryRelativeRootURL = homeDirectoryRelativeRootURL.Substring(pt)
                 homeDirectoryRelativeRootURL = FileSystemUtils.FormatFolderPath(homeDirectoryRelativeRootURL.TrimStart("/"c))
                 RootURL.Text = homeDirectoryRelativeRootURL
-                ctlModule.UpdateModuleSetting(ModuleId, "RootURL", PortalSettings.HomeDirectory & homeDirectoryRelativeRootURL)
+                ctlModule.UpdateModuleSetting(ModuleId, "RootURL", homeDirectoryRelativeRootURL)
 
                 If txtCreatedDate.Enabled Then
                     Dim createdDate As DateTime
@@ -388,6 +389,7 @@ Namespace DotNetNuke.Modules.Gallery
                 ctlModule.UpdateModuleSetting(ModuleId, "BuildCacheOnStart", chkBuildCacheOnStart.Checked.ToString)
                 ctlModule.UpdateModuleSetting(ModuleId, "FixedWidth", txtFixedWidth.Text)
                 ctlModule.UpdateModuleSetting(ModuleId, "FixedHeight", txtFixedHeight.Text)
+                ctlModule.UpdateModuleSetting(ModuleId, "EncoderQuality", txtEncoderQuality.Text)
                 ctlModule.UpdateModuleSetting(ModuleId, "SlideshowSpeed", txtSlideshowSpeed.Text)
 
                 ctlModule.UpdateModuleSetting(ModuleId, "MultiLevelMenu", chkMultiLevelMenu.Checked.ToString)

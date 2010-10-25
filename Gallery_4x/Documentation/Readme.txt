@@ -1,6 +1,6 @@
 DotNetNuke.Modules.Gallery (MediaGallery) Module
 
-Gallery version 4.03.02 requires DNN 4.09.03 and higher.
+Gallery version 4.03.03 requires DNN 4.09.03 and higher.
 
 Install/UnInstall:
 	Install/UnInstall it just like any other DNN module

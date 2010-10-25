@@ -339,9 +339,6 @@
   <data name="ControlTitle_configuration.Text" xml:space="preserve">
     <value>Gallery Configuration</value>
   </data>
-  <data name="NumericValueGE25LE300000.ErrorMessage" xml:space="preserve">
-    <value>Value must be integer &gt;= 25 and &lt;=300000 (5 min)!</value>
-  </data>
   <data name="NumericValueGE25LE800.ErrorMessage" xml:space="preserve">
     <value>Value must be integer &gt;= 25 and &lt;= 800!</value>
   </data>
@@ -380,5 +377,14 @@
   </data>
   <data name="MaxFileSizeLimits.Text" xml:space="preserve">
     <value>&lt;br /&gt;Current limitations set in web.config are as follows:&lt;br /&gt;maxRequestLength - {0} kb&lt;br /&gt;requestLengthDiskThreshold - {1} kb&lt;br /&gt;executionTimeout - {2} sec.</value>
+  </data>
+  <data name="NumericValueGE10LE100.ErrorMessage" xml:space="preserve">
+    <value>Value must be integer &gt;=10 and &lt;=100!</value>
+  </data>
+  <data name="plEncoderQuality.Help" xml:space="preserve">
+    <value>Sets the desired compression level (encoder quality) with which JPEG images are saved. Range: (worst) 10-100 (best)</value>
+  </data>
+  <data name="plEncoderQuality.Text" xml:space="preserve">
+    <value>Encoder Quality:</value>
   </data>
 </root>

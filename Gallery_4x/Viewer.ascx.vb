@@ -79,20 +79,6 @@ Namespace DotNetNuke.Modules.Gallery
             ' Load the styles
             DirectCast(Page, CDefault).AddStyleSheet(CreateValidID(GalleryConfig.Css()), GalleryConfig.Css())
 
-            'If Not Request.QueryString("mid") Is Nothing Then
-            '    mModuleID = Int16.Parse(Request.QueryString("mid"))
-            'End If
-
-            'If Not Page.IsPostBack _
-            'AndAlso Request.QueryString("color") Is Nothing _
-            'AndAlso Request.QueryString("flipx") Is Nothing _
-            'AndAlso Request.QueryString("flipy") Is Nothing _
-            'AndAlso Request.QueryString("rotate") Is Nothing _
-            'AndAlso Request.QueryString("zoomindex") Is Nothing _
-            'AndAlso (Not Request.UrlReferrer Is Nothing) Then
-            '    ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-            'End If
-
             ReturnCtl = Request.QueryString("returnctl")
 
             'WES - Added to change control title if user had edit permission
@@ -102,16 +88,10 @@ Namespace DotNetNuke.Modules.Gallery
                     CType(ctl, Label).Text = Localization.GetString("ControlTitle_editor", LocalResourceFile)
                 End If
             End If
+
         End Sub
 
         Private Sub btnBack_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBack.Click
-            'Dim url As String
-            'If Request.QueryString("mode") Is Nothing Then ' This view called by gallery container
-            '    url = GetURL(Page.Request.ServerVariables("URL"), Page, "", "currentitem=&media=&ctl=&mid=") '"currentstrip=&currentitem=&media=&ctl=&mid=")
-            'Else
-            '    url = GetURL(Page.Request.ServerVariables("URL"), Page, "ctl=FileEdit", "mode=&color=&flipx=&flipy=&rotate=&zoomindex=")
-            'End If
-            'Response.Redirect(url) '(CType(Session("UrlReferrer"), String))
             Response.Redirect(ReturnURL(TabId, ModuleId, Request))
         End Sub
 

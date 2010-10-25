@@ -918,6 +918,7 @@ Namespace DotNetNuke.Modules.Gallery
         Public Shared Function SanitizedRawUrl(ByVal TabId As Integer, ByVal ModuleId As Integer, ByVal addAdditionalParameters As String()) As String
             Return SanitizedRawUrl(TabId, ModuleId, addAdditionalParameters, "")
         End Function
+
         Public Shared Function SanitizedRawUrl(ByVal TabId As Integer, ByVal ModuleId As Integer, ByVal addAdditionalParameters As String(), ByVal remove As String) As String
             Dim add As String = ""
 
@@ -929,7 +930,6 @@ Namespace DotNetNuke.Modules.Gallery
 
             Return SanitizedRawUrl(TabId, ModuleId, add, remove, Nothing)
         End Function
-
 
         '' Added By Quinn
         '' Fix for GAL-9403
@@ -1040,13 +1040,16 @@ Namespace DotNetNuke.Modules.Gallery
     End Class
 
 #Region "Comparer"
+
     ' Original class in C# by Diego Mijelshon
+    ' Converted to generic form - 10-22-2010 by William Severance
+
     <Serializable()> _
     Public Class Comparer
-        Implements IComparer
+        Implements IComparer(Of IGalleryObjectInfo)
 
-        Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer _
-            Implements System.Collections.IComparer.Compare
+        Public Function Compare(ByVal x As IGalleryObjectInfo, ByVal y As IGalleryObjectInfo) As Integer _
+            Implements System.Collections.Generic.IComparer(Of IGalleryObjectInfo).Compare
 
             Dim typex As Type = x.GetType()
             Dim typey As Type = y.GetType()

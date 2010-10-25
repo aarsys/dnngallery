@@ -31,43 +31,61 @@ Imports DotNetNuke.Modules.Gallery.Utils
 Namespace DotNetNuke.Modules.Gallery
 
     ''' <summary>
-    ''' Class for using the viewer to view galleries
+    ''' Class for using the viewer and slideshow to view galleries
     ''' </summary>
     ''' <remarks></remarks>
     Public Class GalleryViewerRequest
         Inherits BaseRequest
 
         Private mRequest As HttpRequest
-
-        ' Stored reference to ItemIndex of Browseable Items collection
+        Private _browsableItems As New Generic.List(Of IGalleryObjectInfo)
         Private _currentItemIndex As Integer
-
-        Private _currentItem As Integer
-        Private _nextItem As Integer
-        Private _previousItem As Integer
+        Private _currentItemNumber As Integer
+        Private _nextItemNumber As Integer
+        Private _previousItemNumber As Integer
 
 #Region "Public Properties"
+
+        Public ReadOnly Property BrowsableItems() As List(Of IGalleryObjectInfo)
+            Get
+                If _browsableItems Is Nothing Then
+                    _browsableItems = New List(Of IGalleryObjectInfo)
+                End If
+                Return _browsableItems
+            End Get
+        End Property
+
         Public ReadOnly Property CurrentItem() As GalleryFile
             Get
-                Return CType(MyBase.Folder.List.Item(_currentItem), GalleryFile)
+                'If BrowsableItems.Count = 0 Then
+                Return CType(MyBase.Folder.List.Item(_currentItemNumber), GalleryFile)
+                'Else
+                'Return CType(BrowsableItems.Item(_currentItemIndex), GalleryFile)
+                'End If
+            End Get
+        End Property
+
+        Public ReadOnly Property CurrentItemIndex() As Integer
+            Get
+                Return _currentItemIndex
             End Get
         End Property
 
         Public ReadOnly Property CurrentItemNumber() As Integer
             Get
-                Return _currentItem + 1
+                Return _currentItemNumber '+ 1
             End Get
         End Property
 
-        Public ReadOnly Property NextItem() As Integer
+        Public ReadOnly Property NextItemNumber() As Integer
             Get
-                Return _nextItem
+                Return _nextItemNumber
             End Get
         End Property
 
-        Public ReadOnly Property PreviousItem() As Integer
+        Public ReadOnly Property PreviousItemNumber() As Integer
             Get
-                Return _previousItem
+                Return _previousItemNumber
             End Get
         End Property
 
@@ -83,8 +101,6 @@ Namespace DotNetNuke.Modules.Gallery
                 Exit Sub
             End If
 
-            ' New sort feature since 2.0
-            Dim myBrowsableItems As New ArrayList
             Dim intCounter As Integer
 
             'For Each intCounter In MyBase.Folder.BrowsableItems
@@ -99,45 +115,70 @@ Namespace DotNetNuke.Modules.Gallery
 
             For Each intCounter In MyBase.Folder.BrowsableItems
                 Dim item As GalleryFile = CType(MyBase.Folder.List.Item(intCounter), GalleryFile)
-                myBrowsableItems.Add(item)
+                BrowsableItems.Add(item)
             Next
 
-            myBrowsableItems.Sort(New Comparer(New String(0) {[Enum].GetName(GetType(Config.GallerySort), SortType)}, SortDescending))
-
+            BrowsableItems.Sort(New Comparer(New String(0) {[Enum].GetName(GetType(Config.GallerySort), SortType)}, SortDescending))
             mRequest = HttpContext.Current.Request
 
             ' Determine initial item to be viewed.
             If Not mRequest.QueryString("currentitem") Is Nothing Then
-                _currentItem = CInt(mRequest.QueryString("currentitem"))
+                _currentItemNumber = CInt(mRequest.QueryString("currentitem"))
             Else
-                _currentItem = CType(myBrowsableItems.Item(0), GalleryFile).Index
+                _currentItemNumber = BrowsableItems.Item(0).Index
             End If
 
             ' Grab the index of the item in the folder.list collection
             If MyBase.Folder.IsBrowsable Then
-                For intCounter = 0 To myBrowsableItems.Count - 1
-                    If CType(myBrowsableItems.Item(intCounter), GalleryFile).Index = _currentItem Then
+                For intCounter = 0 To BrowsableItems.Count - 1
+                    If BrowsableItems(intCounter).Index = _currentItemNumber Then
                         _currentItemIndex = intCounter
                         Exit For
                     End If
                 Next
-
-                If _currentItemIndex = myBrowsableItems.Count - 1 Then
-                    _nextItem = CType(myBrowsableItems.Item(0), GalleryFile).Index
-                Else
-                    _nextItem = CType(myBrowsableItems.Item(_currentItemIndex + 1), GalleryFile).Index
-                End If
-
-                If _currentItemIndex = 0 Then
-                    _previousItem = CType(myBrowsableItems.Item(myBrowsableItems.Count - 1), GalleryFile).Index
-                Else
-                    _previousItem = CType(myBrowsableItems.Item(_currentItemIndex - 1), GalleryFile).Index
-                End If
-
+                _nextItemNumber = GetNextItemNumber()
+                _previousItemNumber = GetPreviousItemNumber()
             End If
-
         End Sub
 
+        Private Function GetNextItemNumber() As Integer
+            If _currentItemIndex = BrowsableItems.Count - 1 Then
+                Return BrowsableItems(0).Index
+            Else
+                Return BrowsableItems(_currentItemIndex + 1).Index
+            End If
+        End Function
+
+        Private Function GetPreviousItemNumber() As Integer
+            If _currentItemIndex = 0 Then
+                Return BrowsableItems(BrowsableItems.Count - 1).Index
+            Else
+                Return BrowsableItems(_currentItemIndex - 1).Index
+            End If
+        End Function
+
+        Private Function Constrain(ByVal n As Integer, ByVal min As Integer, ByVal max As Integer) As Integer
+            If n < 0 Then
+                Return min
+            ElseIf n > max Then
+                Return min
+            End If
+            Return n
+        End Function
+
+        Public Sub MoveNext()
+            _currentItemNumber = _nextItemNumber
+            _currentItemIndex = Constrain(_currentItemIndex + 1, 0, BrowsableItems.Count - 1)
+            _previousItemNumber = GetPreviousItemNumber()
+            _nextItemNumber = GetNextItemNumber()
+        End Sub
+
+        Public Sub MovePrevious()
+            _currentItemNumber = _previousItemNumber
+            _currentItemIndex = Constrain(_currentItemIndex - 1, 0, BrowsableItems.Count - 1)
+            _previousItemNumber = GetPreviousItemNumber()
+            _previousItemNumber = GetPreviousItemNumber()
+        End Sub
 #End Region
 
     End Class

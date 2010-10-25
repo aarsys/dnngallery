@@ -710,7 +710,7 @@
     <Content Include="App_LocalResources\Voting.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="04.03.02.txt" />
+    <Content Include="04.03.03.txt" />
     <Content Include="Controls\ControlViewer.ascx" />
     <Content Include="GalleryPage.aspx" />
     <Content Include="Image.aspx" />
@@ -815,6 +815,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Providers\DataProviders\SqlDataProvider\04.03.02.SqlDataProvider" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Providers\DataProviders\SqlDataProvider\04.03.03.SqlDataProvider" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" Condition="" />

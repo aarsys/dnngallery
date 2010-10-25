@@ -120,11 +120,11 @@ Namespace DotNetNuke.Modules.Gallery
         Private mCategories As New ArrayList
         Private mTextDisplay As New ArrayList
 
-        ' Cache Settings
         Private mBuildCacheonStart As Boolean
         Private mFixedSize As Boolean = True
         Private mFixedWidth As Integer
         Private mFixedHeight As Integer
+        Private mEncoderQuality As Long = DefaultEncoderQuality
         Private mKeepSource As Boolean = DefaultIsKeepSource
         Private mSlideshowSpeed As Integer
         Private mIsPrivate As Boolean
@@ -153,7 +153,6 @@ Namespace DotNetNuke.Modules.Gallery
         ' Gallery view feature settings
         Private mDefaultView As GalleryView
         Private mAllowChangeView As Boolean
-        Private mDisplayWhatsNew As Boolean
         Private mUseWatermark As Boolean
         Private mMultiLevelMenu As Boolean
         Private mAllowSlideshow As Boolean
@@ -190,15 +189,13 @@ Namespace DotNetNuke.Modules.Gallery
 
         Public Shared ReadOnly Property DefaultRootURL() As String
             Get
-                Dim _portalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
-                Return _portalSettings.HomeDirectory & "Gallery/"
+                Return "Gallery/"
             End Get
         End Property
 
         Public Shared ReadOnly Property DefaultRootPath() As String
             Get
-                Dim _portalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
-                Return _portalSettings.HomeDirectoryMapPath & "Gallery\"
+                Return "Gallery\"
             End Get
         End Property
 
@@ -338,6 +335,12 @@ Namespace DotNetNuke.Modules.Gallery
         Public Shared ReadOnly Property DefaultFixedHeight() As Integer
             Get
                 Return 500
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property DefaultEncoderQuality() As Long
+            Get
+                Return 80L
             End Get
         End Property
 
@@ -784,6 +787,12 @@ Namespace DotNetNuke.Modules.Gallery
             End Get
         End Property
 
+        Public ReadOnly Property EncoderQuality() As Long
+            Get
+                Return mEncoderQuality
+            End Get
+        End Property
+
         Public ReadOnly Property IsKeepSource() As Boolean
             Get
                 Return mKeepSource
@@ -901,12 +910,6 @@ Namespace DotNetNuke.Modules.Gallery
             End Get
         End Property
 
-        Public ReadOnly Property DisplayWhatsNew() As Boolean
-            Get
-                Return mDisplayWhatsNew
-            End Get
-        End Property
-
         Public ReadOnly Property DefaultView() As GalleryView
             Get
                 Return mDefaultView
@@ -942,7 +945,7 @@ Namespace DotNetNuke.Modules.Gallery
 #Region "Public Methods, Functions"
 
         Shared Sub New()
-            'Dim _portalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
+
         End Sub
 
         Private Sub New(ByVal ModuleId As Integer)
@@ -966,9 +969,7 @@ Namespace DotNetNuke.Modules.Gallery
             ' Grab settings from the database
             Dim settings As Hashtable = PortalSettings.GetModuleSettings(ModuleId)
 
-            If settings.Count > 0 Then
-                ' Do Nothing
-            Else
+            If settings.Count = 0 Then
                 ' PreConfigure the Module
                 Dim mUserID As Integer
                 If _context.Request.IsAuthenticated Then
@@ -985,7 +986,7 @@ Namespace DotNetNuke.Modules.Gallery
             End If
 
             ' Now iterate through all the values and init local variables
-            mRootURL = GetValue(settings("RootURL"), DefaultRootURL & ModuleId.ToString & "/")
+            mRootURL = _portalSettings.HomeDirectory & GetValue(settings("RootURL"), DefaultRootURL & ModuleId.ToString & "/")
             mGalleryTitle = GetValue(settings("GalleryTitle"), DefaultGalleryTitle)
 
             Try
@@ -1021,6 +1022,7 @@ Namespace DotNetNuke.Modules.Gallery
             '</tamttt:note>
             mFixedWidth = GetValue(settings("FixedWidth"), DefaultFixedWidth)
             mFixedHeight = GetValue(settings("FixedHeight"), DefaultFixedHeight)
+            mEncoderQuality = GetValue(settings("EncoderQuality"), DefaultEncoderQuality)
             mSlideshowSpeed = GetValue(settings("SlideshowSpeed"), DefaultSlideshowSpeed)
             mIsPrivate = GetValue(settings("IsPrivate"), DefaultIsPrivate)
             mMultiLevelMenu = GetValue(settings("MultiLevelMenu"), DefaultMultiLevelMenu)
@@ -1042,7 +1044,6 @@ Namespace DotNetNuke.Modules.Gallery
             mDefaultView = GetValue(settings("DefaultView"), DefaultDefaultView)
             mAllowChangeView = GetValue(settings("AllowChangeView"), DefaultAllowChangeView)
 
-            mDisplayWhatsNew = GetValue(settings("DisplayWhatsNew"), DefaultDisplayWhatsNew)
             mUseWatermark = GetValue(settings("UseWatermark"), DefaultUseWatermark)
 
             mOwnerID = GetValue(settings("OwnerID"), DefaultOwnerId)

@@ -111,11 +111,16 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
             mPopupURL = Page.ResolveUrl(GalleryConfig.SourceDirectory & "/GalleryPage.aspx") & "?ctl=Viewer"
 
             'WES - Added to fix determination of whether we're in Viewer.ascx (in place)
-            '      or Viewer.aspx (in pop-up window)
+            '      or Viewer.aspx (in pop-up window) and to add image title to page title
 
             isPopup = Me.Parent.TemplateControl.AppRelativeVirtualPath.EndsWith("aspx")
 
-            If Not isPopup Then
+            If isPopup Then
+                Dim GalleryPage As GalleryPageBase = CType(Me.Parent.TemplateControl, GalleryPageBase)
+                GalleryPage.PageTitle = GalleryPage.PageTitle & " > " & CurrentRequest.CurrentItem.Title
+            Else
+                Dim SitePage As CDefault = CType(Me.Page, CDefault)
+                SitePage.Title = SitePage.Title & " > " & CurrentRequest.CurrentItem.Title
                 Dim namingContainer As Gallery.Viewer = CType(Me.NamingContainer, Gallery.Viewer)
                 mReturnCtl = namingContainer.ReturnCtl
             End If
@@ -171,8 +176,8 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
 
             If Not CurrentRequest.Folder.IsPopulated Then Response.Redirect(NavigateURL)
 
-            SetHyperLink(MovePrevious, "s_previous.gif", "MovePrevious", CurrentRequest.PreviousItem)
-            SetHyperLink(MoveNext, "s_next.gif", "MoveNext", CurrentRequest.NextItem)
+            SetHyperLink(MovePrevious, "s_previous.gif", "MovePrevious", CurrentRequest.PreviousItemNumber)
+            SetHyperLink(MoveNext, "s_next.gif", "MoveNext", CurrentRequest.NextItemNumber)
 
             ' Allow zooming +3 or -3 times only
             If Not mZoomIndex > 2 Then

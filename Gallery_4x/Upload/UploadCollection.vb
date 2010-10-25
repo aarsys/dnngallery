@@ -424,7 +424,9 @@ Namespace DotNetNuke.Modules.Gallery
                 ' Do Resize
                 If GalleryConfig.IsFixedSize Then
                     ' Save it to album folder for display
-                    ResizeImage(UploadFile, AlbumFile, GalleryConfig.FixedWidth, GalleryConfig.FixedHeight)
+                    With GalleryConfig
+                        ResizeImage(UploadFile, AlbumFile, .FixedWidth, .FixedHeight, .EncoderQuality)
+                    End With
                 Else
                     File.Copy(UploadFile, AlbumFile)
                     Utils.SaveDNNFile(AlbumFile, 0, 0, False, False)

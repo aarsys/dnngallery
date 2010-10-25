@@ -74,7 +74,7 @@ Namespace DotNetNuke.Modules.Gallery
                 _currentItem = Int16.Parse(mRequest.QueryString("currentitem"))
             Else
                 If MyBase.Folder.MediaItems.Count > 0 Then
-                    _currentItem = CType(MyBase.Folder.FlashItems.Item(0), GalleryFile).Index
+                    _currentItem = MyBase.Folder.FlashItems(0) 'CType(MyBase.Folder.FlashItems.Item(0), GalleryFile).Index
                 End If
             End If
 

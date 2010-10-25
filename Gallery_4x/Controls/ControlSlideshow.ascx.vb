@@ -31,14 +31,14 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
     Public Class Slideshow
         Inherits GalleryWebControlBase
 
-        Private _CurrentRequest As GalleryUserRequest
+        Private _CurrentRequest As GalleryViewerRequest
 
 #Region "Public Properties"
-        Public Property CurrentRequest() As GalleryUserRequest
+        Public Property CurrentRequest() As GalleryViewerRequest
             Get
                 Return _CurrentRequest
             End Get
-            Set(ByVal value As GalleryUserRequest)
+            Set(ByVal value As GalleryViewerRequest)
                 _CurrentRequest = value
             End Set
         End Property
@@ -62,7 +62,7 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
         Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
             ErrorMessage.Visible = False
 
-            _CurrentRequest = New GalleryUserRequest(ModuleId)
+            _CurrentRequest = New GalleryViewerRequest(ModuleId, Utils.GetSort(GalleryConfig), Utils.GetSortDESC(GalleryConfig))
 
             If CurrentRequest Is Nothing OrElse Not CurrentRequest.Folder.IsPopulated Then
                 Response.Redirect(ApplicationURL)
@@ -80,7 +80,7 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
 
                     'Generate Clientside Javascript for Slideshow
 
-                    Dim Count As Integer
+                    Dim isPopup As Boolean = Me.Parent.TemplateControl.AppRelativeVirtualPath.EndsWith("aspx")
 
                     sb.Append("<script type='text/javascript' language='javascript'>")
                     sb.Append(vbCrLf)
@@ -93,38 +93,60 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
                     sb.Append(vbCrLf)
                     sb.Append("var Description = new Array()")
                     sb.Append(vbCrLf)
+                    sb.Append("var baseTitle = '")
+                    If isPopup Then
+                        sb.Append(CType(Me.Parent.TemplateControl, GalleryPageBase).PageTitle)
+                    Else
+                        sb.Append(CType(Me.Page, CDefault).Title)
+                    End If
+                    sb.Append("';")
+                    sb.Append(vbCrLf)
 
                     ' Write all of the images out
-                    Dim image As GalleryFile
-                    For Each image In CurrentRequest.ValidImages
+                    Dim image As DotNetNuke.Modules.Gallery.IGalleryObjectInfo
+
+                    'Dim _currentItem As Integer = 0
+                    'If Not Request.QueryString("currentitem") Is Nothing Then
+                    '    _currentItem = CInt(Request.QueryString("currentitem"))
+                    'End If
+
+                    Dim count As Integer
+                    Dim startItemNumber As Integer = CurrentRequest.CurrentItemNumber
+                    Dim totalItemCount As Integer = CurrentRequest.BrowsableItems.Count
+                    Dim startImageURL As String = CurrentRequest.CurrentItem.URL
+
+                    Do
+                        image = CurrentRequest.CurrentItem
                         sb.Append("Pic[")
-                        sb.Append(Count)
+                        sb.Append(count)
                         sb.Append("] = """)
                         sb.Append(image.URL)
                         sb.Append("""")
                         sb.Append(vbCrLf)
                         sb.Append("Title[")
-                        sb.Append(Count)
+                        sb.Append(count)
                         sb.Append("] = """)
                         sb.Append(JSEncode(image.Title.Replace(vbCrLf, "<br />")))
                         sb.Append("""")
                         sb.Append(vbCrLf)
                         sb.Append("Description[")
-                        sb.Append(Count)
+                        sb.Append(count)
                         sb.Append("] = """)
                         sb.Append(JSEncode(image.Description.Replace(vbCrLf, "<br />")))
                         sb.Append("""")
                         sb.Append(vbCrLf)
-                        Count = Count + 1
-                    Next
-
+                        'If startImageURL Is Nothing Then
+                        '    startImageURL = image.URL
+                        'End If
+                        count += 1
+                        CurrentRequest.MoveNext()
+                    Loop Until CurrentRequest.CurrentItemNumber = startItemNumber
                     sb.Append("var t")
                     sb.Append(vbCrLf)
                     sb.Append("var j = 0")
                     sb.Append(vbCrLf)
                     sb.Append("var p = Pic.length")
                     sb.Append(vbCrLf)
-
                     sb.Append("var preLoad = new Array()")
                     sb.Append(vbCrLf)
                     sb.Append("for (i = 0; i < p; i++){")
@@ -139,11 +161,11 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
                     sb.Append(vbCrLf)
                     sb.Append("</script>")
 
-                    ' JIMJ Set the start image as the first image
-                    Dim StartImage As String
-                    StartImage = CType(CurrentRequest.ValidImages(0), GalleryFile).URL
+                    ' Set the start image as the first valid image
+                    'Dim StartImage As String
+                    'StartImage = CType(CurrentRequest.ValidImages(0), GalleryFile).URL
                     ' JIMJ wrap src in extra "'s
-                    ImageSrc.Text = "<img src=""" & StartImage & """ name='SlideShow' alt='' class='Gallery_Image'/>" 'style='border-color:#D1D7DC;border-width:2px;border-style:Outset;'>"
+                    ImageSrc.Text = "<img src=""" & startImageURL & """ name='SlideShow' alt='' class='Gallery_Image'/>" 'style='border-color:#D1D7DC;border-width:2px;border-style:Outset;'>"
 
                     'WES - Use ClientScript.RegisterStartupScript rather than injecting script via label
                     'as use of <body onload = "runSlideShow();"> in markup results in second body tag when slide show

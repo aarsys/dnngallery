@@ -112,6 +112,15 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
                         End If
                     End If
                 End If
+                Dim isPopup As Boolean = Me.Parent.TemplateControl.AppRelativeVirtualPath.EndsWith("aspx")
+
+                If isPopup Then
+                    Dim GalleryPage As GalleryPageBase = CType(Me.Parent.TemplateControl, GalleryPageBase)
+                    GalleryPage.PageTitle = GalleryPage.PageTitle & " > " & CurrentRequest.CurrentItem.Title
+                Else
+                    Dim SitePage As CDefault = CType(Me.Page, CDefault)
+                    SitePage.Title = SitePage.Title & " > " & CurrentRequest.CurrentItem.Title
+                End If
             End If
         End Sub
     End Class

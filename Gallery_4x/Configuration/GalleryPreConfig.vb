@@ -59,6 +59,7 @@ Namespace DotNetNuke.Modules.Gallery
             ctlModule.UpdateModuleSetting(ModuleId, "BuildCacheOnStart", Config.DefaultBuildCacheOnStart.ToString)
             ctlModule.UpdateModuleSetting(ModuleId, "FixedWidth", Config.DefaultFixedWidth.ToString)
             ctlModule.UpdateModuleSetting(ModuleId, "FixedHeight", Config.DefaultFixedHeight.ToString)
+            ctlModule.UpdateModuleSetting(ModuleId, "EncoderQuality", Config.DefaultEncoderQuality.ToString)
             ctlModule.UpdateModuleSetting(ModuleId, "SlideshowSpeed", Config.DefaultSlideshowSpeed.ToString)
             ctlModule.UpdateModuleSetting(ModuleId, "IsPrivate", Config.DefaultIsPrivate.ToString)
             ctlModule.UpdateModuleSetting(ModuleId, "MultiLevelMenu", Config.DefaultMultiLevelMenu.ToString)
