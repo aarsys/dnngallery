@@ -252,7 +252,7 @@ Namespace DotNetNuke.Modules.Gallery
                     ' If we moved, then we retrieved a result
                     ' William Severance - Added check for empty value and replacement by default -1
                     Dim s As String = iterator.Current.Value()
-                    If Not String.IsNullOrEmpty(s) Then Return Int16.Parse(s)
+                    If Not String.IsNullOrEmpty(s) Then Return Integer.Parse(s)
                 End If
             End If
             Return -1 'Default OwnerID for non-specified, non-private gallery object
@@ -607,7 +607,7 @@ Namespace DotNetNuke.Modules.Gallery
 
                             Dim vote As New Vote
                             With vote
-                                .UserID = Int16.Parse(GetValue(voteNav.GetAttribute("userid", ""), "0"))
+                                .UserID = Integer.Parse(GetValue(voteNav.GetAttribute("userid", ""), "0"))
                                 .Score = Int16.Parse(GetValue(voteNav.GetAttribute("score", ""), "0"))
                                 Try
                                     .CreatedDate = XmlConvert.ToDateTime(GetValue(voteNav.GetAttribute("createddate", ""), XmlConvert.ToString(DateTime.Now, XmlDateTimeSerializationMode.Local)), XmlDateTimeSerializationMode.Local)

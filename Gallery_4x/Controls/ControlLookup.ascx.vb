@@ -97,7 +97,7 @@ Namespace DotNetNuke.Modules.Gallery.WebControls
 
             ' JIMJ try looking up the module id from the querystring
             If ModuleID = 0 AndAlso Not Request.QueryString("mid") Is Nothing Then
-                ModuleID = Int16.Parse(Request.QueryString("mid"))
+                ModuleID = Integer.Parse(Request.QueryString("mid"))
             End If
 
             Dim lstItems As String = txtItemsID.Value 'txtItemsID.Text
