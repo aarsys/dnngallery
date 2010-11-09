@@ -420,15 +420,14 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
             Dim intDisplayMethod As Integer = 1 ' default value is display_name
 
             Dim _portalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
-            Me.PortalID = _portalSettings.PortalId
+            PortalID = _portalSettings.PortalId
 
             If Not Page.Request.QueryString("mid") Is Nothing Then
-                Me.ModuleID = Int16.Parse(Page.Request.QueryString("mid"))
+                ModuleID = Integer.Parse(Page.Request.QueryString("mid"))
             End If
 
             If Not Page.Request.QueryString("objectclass") Is Nothing Then
                 intClass = CType([Enum].Parse(GetType(ObjectClass), Page.Request.QueryString("objectclass")), ObjectClass)
-                'intClass = Int16.Parse(Page.Request.QueryString("objectclass"))
             Else
                 If Not Page.Request.QueryString("objectclasses") Is Nothing Then
                     Dim strClass As String() = Split(Page.Request.QueryString("objectclasses"), ",", , CompareMethod.Text)

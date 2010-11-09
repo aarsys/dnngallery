@@ -78,7 +78,7 @@ Namespace DotNetNuke.Modules.Gallery
             DirectCast(Page, CDefault).AddStyleSheet(CreateValidID(GalleryConfig.Css()), GalleryConfig.Css())
 
             If Not Request.QueryString("mid") Is Nothing Then
-                mModuleID = Int16.Parse(Request.QueryString("mid"))
+                mModuleID = Integer.Parse(Request.QueryString("mid"))
             End If
 
             mGalleryConfig = Config.GetGalleryConfig(mModuleID)

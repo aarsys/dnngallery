@@ -17,6 +17,8 @@ The following issues were fixed:
     use and store home directory relative RootURL and implemented IUpgradable to modify value of this setting for all Gallery modules at the time of upgrade to this version.
 3.  When a gallery album has more than 5 pages, the insertion of "..." in the pager is inconsistant often resulting in two sets of "..." appearing side by side. Modified pager
     rendering code to insert "..." more appropriately.
+4.  In an installation having ModuleId values > 32767, the conversion Int16.Parse on the "mid" parameter of the QueryString will fail. Changed 9 occurances of Int16.Parse to Integer.Parse
+    in 6 code files.
 
 The following minor enhancements were made:
 

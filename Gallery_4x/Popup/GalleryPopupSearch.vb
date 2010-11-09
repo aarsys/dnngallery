@@ -95,7 +95,7 @@ Namespace DotNetNuke.Modules.Gallery.PopupControls
             Me.PortalID = _portalSettings.PortalId
 
             If Not Page.Request.QueryString("mid") Is Nothing Then
-                Me.ModuleID = Int16.Parse(Page.Request.QueryString("mid"))
+                ModuleID = Integer.Parse(Page.Request.QueryString("mid"))
             End If
 
             If Not Page.Request.QueryString("targetid") Is Nothing Then

@@ -65,7 +65,7 @@ Namespace DotNetNuke.Modules.Gallery
             mRequest = HttpContext.Current.Request
 
             If Not mRequest.QueryString("currentitem") Is Nothing Then
-                _currentItem = Int16.Parse(mRequest.QueryString("currentitem"))
+                _currentItem = Integer.Parse(mRequest.QueryString("currentitem"))
             Else
                 If MyBase.Folder.MediaItems.Count > 0 Then
                     _currentItem = MyBase.Folder.MediaItems(0)

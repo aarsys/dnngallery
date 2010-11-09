@@ -443,7 +443,7 @@ Namespace DotNetNuke.Modules.Gallery
                     If sOwnerID = String.Empty Then
                         OwnerID = mGalleryConfig.OwnerID
                     Else
-                        OwnerID = Int16.Parse(sOwnerID)
+                        OwnerID = Integer.Parse(sOwnerID)
                     End If
                 Else
                     OwnerID = mUserID
