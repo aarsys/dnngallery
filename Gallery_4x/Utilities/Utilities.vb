@@ -721,7 +721,17 @@ Namespace DotNetNuke.Modules.Gallery
           'Is the folder already in the DNN folders table? If not, should we create it and continue?
           If objFolderInfo Is Nothing Then
             If AddNonExistingFolder Then
-              folderId = objFolderController.AddFolder(PortalId, folderPath)
+              objFolderInfo = New Services.FileSystem.FolderInfo
+              With objFolderInfo
+                .UniqueId = Guid.NewGuid()
+                .VersionGuid = Guid.NewGuid()
+                .PortalID = PortalId
+                .FolderPath = folderPath
+                .StorageLocation = Services.FileSystem.FolderController.StorageLocationTypes.InsecureFileSystem
+                .IsProtected = False
+                .IsCached = False
+              End With
+              folderId = objFolderController.AddFolder(objFolderInfo)
               If folderId <> -1 Then
                 'WES - Set Folder Permissions to inherit from parent
                 FileSystemUtils.SetFolderPermissions(PortalId, folderId, folderPath)
@@ -750,10 +760,33 @@ Namespace DotNetNuke.Modules.Gallery
             End If
             'Is the file already in the DNN files table in which case we update rather than add
             If objFileInfo Is Nothing Then
-              fileId = objFileController.AddFile(PortalId, fileName, fileExt, fileSize, Width, Height, contentType, folderPath, folderId, ClearCache)
+              objFileInfo = New Services.FileSystem.FileInfo
+              With objFileInfo
+                .PortalId = PortalId
+                .FileName = fileName
+                .Extension = fileExt
+                .Size = Convert.ToInt32(fileSize)
+                .Width = Width
+                .Height = Height
+                .ContentType = contentType
+                .Folder = FileSystemUtils.FormatFolderPath(folderPath)
+                .FolderId = folderId
+                .IsCached = ClearCache
+                .UniqueId = Guid.NewGuid
+                .VersionGuid = Guid.NewGuid
+              End With
+              fileId = objFileController.AddFile(objFileInfo)
+              If ClearCache Then
+                objFileController.GetAllFilesRemoveCache()
+              End If
             Else
+              With objFileInfo
+                .Size = Convert.ToInt32(fileSize)
+                .Width = Width
+                .Height = Height
+              End With
               fileId = objFileInfo.FileId
-              objFileController.UpdateFile(fileId, fileName, fileExt, fileSize, Width, Height, contentType, folderPath, folderId)
+              objFileController.UpdateFile(objFileInfo)
             End If
           End If
         End If
