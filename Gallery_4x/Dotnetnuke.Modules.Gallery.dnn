@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
     <packages>
-        <package name="DNN_Gallery" type="Module" version="04.04.00.01">
+        <package name="DNN_Gallery" type="Module" version="04.04.00.03">
             <friendlyName>Gallery</friendlyName>
             <description>The Media Gallery Module stores and displays a collection of items organized in albums.</description>
             <owner>
