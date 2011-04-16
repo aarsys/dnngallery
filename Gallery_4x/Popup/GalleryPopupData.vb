@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -36,90 +36,86 @@ Imports DotNetNuke.Services.Exceptions
 
 Namespace DotNetNuke.Modules.Gallery.PopupControls
 
-    Public Class PopupGalleryData
-        Inherits PopupObject
+  Public Class PopupGalleryData
+    Inherits PopupObject
 
-        Dim mImageUrl As String
+    Dim mImageUrl As String
 
-        Public Sub New(ByVal Popup As PopupData)
-            MyBase.New(Popup)
+    Public Sub New(ByVal Popup As PopupData)
+      MyBase.New(Popup)
 
-            Dim GalleryConfig As Config = DotNetNuke.Modules.Gallery.Config.GetGalleryConfig(Popup.ModuleID)
-            Dim imgURL As String = AddHTTP(GetDomainName(HttpContext.Current.Request)) & "/DesktopModules/Gallery/Popup/Images/" 'ADSIConfig.PopupImageURL
-            Dim searchResult As New ArrayList
-            Dim searchString As String = Popup.SearchValue
-            Dim searchLocation As String = Popup.Location
-            Dim sID As Integer
-            Dim sName As String = ""
-            Dim popupItem As PopupListItem
+      Dim GalleryConfig As Config = DotNetNuke.Modules.Gallery.Config.GetGalleryConfig(Popup.ModuleID)
+      Dim imgURL As String = AddHTTP(GetDomainName(HttpContext.Current.Request)) & "/DesktopModules/Gallery/Popup/Images/" 'ADSIConfig.PopupImageURL
+      Dim searchResult As New ArrayList
+      Dim searchString As String = Popup.SearchValue
+      Dim searchLocation As String = Popup.Location
+      Dim sID As Integer
+      Dim sName As String = ""
+      Dim popupItem As PopupListItem
 
-            Try
-                Select Case Popup.ObjectClass
+      Try
+        Select Case Popup.ObjectClass
 
-                    Case ObjectClass.DNNRole
-                        mImageUrl = imgURL & "sp_team.gif"
+          Case ObjectClass.DNNRole
+            mImageUrl = imgURL & "sp_team.gif"
 
-                        Dim ctlRole As New RoleController
-                        searchResult = ctlRole.GetPortalRoles(Popup.PortalID)
+            Dim ctlRole As New RoleController
+            searchResult = ctlRole.GetPortalRoles(Popup.PortalID)
 
-                        ' JIMJ Add role glbRoleAllUsersName
-                        Dim R As New RoleInfo()
-                        R.RoleID = CInt(glbRoleAllUsers)
-                        R.RoleName = glbRoleAllUsersName
-                        searchResult.Add(R)
+            ' JIMJ Add role glbRoleAllUsersName
+            Dim R As New RoleInfo()
+            R.RoleID = CInt(glbRoleAllUsers)
+            R.RoleName = glbRoleAllUsersName
+            searchResult.Add(R)
 
-                        Dim role As RoleInfo
-                        For Each role In searchResult
-                            If role.RoleName.ToLower.StartsWith(searchString.ToLower) OrElse (searchString.Length = 0) Then
-                                sID = role.RoleID
-                                sName = role.RoleName
-                                popupItem = New PopupListItem(sID.ToString, ObjectClass.DNNRole, sName, mImageUrl, 1)
-                                Popup.ListItems.Add(popupItem)
-                            End If
-                        Next
+            Dim role As RoleInfo
+            For Each role In searchResult
+              If role.RoleName.ToLower.StartsWith(searchString.ToLower) OrElse (searchString.Length = 0) Then
+                sID = role.RoleID
+                sName = role.RoleName
+                popupItem = New PopupListItem(sID.ToString, ObjectClass.DNNRole, sName, mImageUrl, 1)
+                Popup.ListItems.Add(popupItem)
+              End If
+            Next
 
-                    Case ObjectClass.DNNUser
-                        mImageUrl = imgURL & "sp_user.gif"
+          Case ObjectClass.DNNUser
+            mImageUrl = imgURL & "sp_user.gif"
+            searchResult = UserController.GetUsers(Popup.PortalID)
 
-                        Dim ctlUser As New UserController
-                        ' JIMJ Use new UserController object to get users
-                        ' searchResult = ctlUser.GetUsers(Popup.PortalID, False, False)
-                        searchResult = UserController.GetUsers(Popup.PortalID, False)
+            ' JIMJ Changes to add the names correctly
+            Dim user As UserInfo
+            For Each user In searchResult
+              sID = user.UserID
+              sName = user.Username
 
-                        ' JIMJ Changes to add the names correctly
-                        Dim user As UserInfo
-                        For Each user In searchResult
-                            sID = user.UserID
-                            sName = user.Username
+              ' See if we can find the user or if we want everything
+              If (sName.ToLower.StartsWith(searchString.ToLower)) OrElse (searchString.Length = 0) Then
+                popupItem = New PopupListItem(sID.ToString, ObjectClass.DNNUser, user.Username, mImageUrl, 1)
 
-                            ' See if we can find the user or if we want everything
-                            If (sName.ToLower.StartsWith(searchString.ToLower)) OrElse (searchString.Length = 0) Then
-                                popupItem = New PopupListItem(sID.ToString, ObjectClass.DNNUser, user.Username, mImageUrl, 1)
+                popupItem.AddProperty("Full Name", user.Profile.FullName, 200)
+                Popup.ListItems.Add(popupItem)
+              End If
+            Next
 
-                                popupItem.AddProperty("Full Name", user.Profile.FullName, 200)
-                                Popup.ListItems.Add(popupItem)
-                            End If
-                        Next
+        End Select
 
-                End Select
+      Catch exc As Exception
+        LogException(exc)
+      End Try
 
-            Catch exc As Exception
-                LogException(exc)
-            End Try
+    End Sub
 
-        End Sub
+    Public Overrides Sub Render(ByVal writer As HtmlTextWriter)
+      Dim objRender As RenderPopup = New RenderPopup(Me.PopupDataControl)
+      objRender.Render(writer)
+    End Sub
 
-        Public Overrides Sub Render(ByVal writer As HtmlTextWriter)
-            Dim objRender As RenderPopup = New RenderPopup(Me.PopupDataControl)
-            objRender.Render(writer)
-        End Sub
+    Public Overrides Sub CreateChildControls()
+    End Sub 'CreateChildControls
 
-        Public Overrides Sub CreateChildControls()
-        End Sub 'CreateChildControls
+    Public Overrides Sub OnPreRender()
+    End Sub
 
-        Public Overrides Sub OnPreRender()
-        End Sub
-
-    End Class 'PopupList
+  End Class 'PopupList
 
 End Namespace

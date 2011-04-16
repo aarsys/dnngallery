@@ -1,3 +1,6 @@
+Gallery Team Members (Gallery 4.3.3 and 4.4.0)
+    William Severance (Coordinator)         imagemaker         www.wesnetdesigns.com
+
 Gallery Team Members (Gallery 4.3.0)
 	Chris Paterra (CORE TEAM SPONSOR)       crispy	 	       www.AppTheory.com
 	Nestor Sanchez (TEAM CO-LEAD)		    Hooligannes 	   www.NESinteractivos.com
@@ -23,6 +26,7 @@ Gallery Testers (Gallery 4.3.0)
 	Benjie Mangulabnan                      Batusai
 	Jos Richters
 	Valerie Sosnow
+
 
 Original Version for IBS by:
 	David Barrett, www.DavidBarrett.net

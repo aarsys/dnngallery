@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -44,7 +44,26 @@ Namespace DotNetNuke.Modules.Gallery
             Get
                 Return mGalleryConfig
             End Get
-        End Property
+    End Property
+
+    Public Property Title As String
+      Get
+        Return lblTitle.Text
+      End Get
+      Set(value As String)
+        lblTitle.Text = value
+      End Set
+    End Property
+
+    Public Property ViewControlWidth As Unit
+      Get
+        Return New Unit(tblViewControl.Style("width"))
+      End Get
+      Set(value As Unit)
+        tblViewControl.Style.Add("width", value.ToString())
+      End Set
+    End Property
+
 #End Region
 
 #Region "Event Handlers"

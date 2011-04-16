@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -22,165 +22,126 @@ Option Explicit On
 
 Imports System.Text
 Imports System.IO
-Imports system.xml
+Imports System.Xml
 Imports DotNetNuke.Common.Globals
 Imports DotNetNuke.Modules.Gallery.Utils
 
 Namespace DotNetNuke.Modules.Gallery.WebControls
 
-    Public Class Slideshow
-        Inherits GalleryWebControlBase
+  Public Class Slideshow
+    Inherits GalleryWebControlBase
 
-        Private _CurrentRequest As GalleryViewerRequest
+    Private _CurrentRequest As GalleryViewerRequest
 
 #Region "Public Properties"
-        Public Property CurrentRequest() As GalleryViewerRequest
-            Get
-                Return _CurrentRequest
-            End Get
-            Set(ByVal value As GalleryViewerRequest)
-                _CurrentRequest = value
-            End Set
-        End Property
+    Public Property CurrentRequest() As GalleryViewerRequest
+      Get
+        Return _CurrentRequest
+      End Get
+      Set(ByVal value As GalleryViewerRequest)
+        _CurrentRequest = value
+      End Set
+    End Property
 #End Region
 
 #Region " Web Form Designer Generated Code "
 
-        'This call is required by the Web Form Designer.
-        <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+    'This call is required by the Web Form Designer.
+    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
 
-        End Sub
+    End Sub
 
-        Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
-            'CODEGEN: This method call is required by the Web Form Designer
-            'Do not modify it using the code editor.
-            InitializeComponent()
-        End Sub
+    Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
+      'CODEGEN: This method call is required by the Web Form Designer
+      'Do not modify it using the code editor.
+      InitializeComponent()
+    End Sub
 
 #End Region
 
-        Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            ErrorMessage.Visible = False
+    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+      ErrorMessage.Visible = False
 
-            _CurrentRequest = New GalleryViewerRequest(ModuleId, Utils.GetSort(GalleryConfig), Utils.GetSortDESC(GalleryConfig))
+      _CurrentRequest = New GalleryViewerRequest(ModuleId, Utils.GetSort(GalleryConfig), Utils.GetSortDESC(GalleryConfig))
 
-            If CurrentRequest Is Nothing OrElse Not CurrentRequest.Folder.IsPopulated Then
-                Response.Redirect(ApplicationURL)
-            End If
-            If Not IsPostBack Then
-                If CurrentRequest.Folder.IsBrowsable Then
-                    celPicture.Width = GalleryConfig.FixedWidth.ToString
-                    celPicture.Height = GalleryConfig.FixedHeight.ToString
-                    'WES - localized loading message
-                    lblTitleBox.Text = Localization.GetString("Loading", GalleryConfig.SharedResourceFile)
+      If CurrentRequest Is Nothing OrElse Not CurrentRequest.Folder.IsPopulated Then
+        Response.Redirect(ApplicationURL)
+      End If
+      If Not IsPostBack Then
+        If CurrentRequest.Folder.IsBrowsable Then
 
-                    Dim albumPath As String = CurrentRequest.Folder.Path
-                    Dim slideSpeed As String = GalleryConfig.SlideshowSpeed.ToString
-                    Dim sb As New StringBuilder
 
-                    'Generate Clientside Javascript for Slideshow
 
-                    Dim isPopup As Boolean = Me.Parent.TemplateControl.AppRelativeVirtualPath.EndsWith("aspx")
+          celPicture.Width = GalleryConfig.FixedWidth.ToString
+          celPicture.Height = GalleryConfig.FixedHeight.ToString
+          'WES - localized loading message
+          ErrorMessage.Text = Localization.GetString("Loading", GalleryConfig.SharedResourceFile)
 
-                    sb.Append("<script type='text/javascript' language='javascript'>")
-                    sb.Append(vbCrLf)
-                    sb.Append("var slideShowSpeed = ")
-                    sb.Append(slideSpeed)
-                    sb.Append(vbCrLf)
-                    sb.Append("var Pic = new Array()")
-                    sb.Append(vbCrLf)
-                    sb.Append("var Title = new Array()")
-                    sb.Append(vbCrLf)
-                    sb.Append("var Description = new Array()")
-                    sb.Append(vbCrLf)
-                    sb.Append("var baseTitle = '")
-                    If isPopup Then
-                        sb.Append(CType(Me.Parent.TemplateControl, GalleryPageBase).PageTitle)
-                    Else
-                        sb.Append(CType(Me.Page, CDefault).Title)
-                    End If
-                    sb.Append("';")
-                    sb.Append(vbCrLf)
+          Dim albumPath As String = CurrentRequest.Folder.Path
+          Dim slideSpeed As String = GalleryConfig.SlideshowSpeed.ToString
 
-                    ' Write all of the images out
-                    Dim image As DotNetNuke.Modules.Gallery.IGalleryObjectInfo
 
-                    'Dim _currentItem As Integer = 0
-                    'If Not Request.QueryString("currentitem") Is Nothing Then
-                    '    _currentItem = CInt(Request.QueryString("currentitem"))
-                    'End If
+          'Generate Clientside Javascript for Slideshow
 
-                    Dim count As Integer
-                    Dim startItemNumber As Integer = CurrentRequest.CurrentItemNumber
-                    Dim totalItemCount As Integer = CurrentRequest.BrowsableItems.Count
-                    Dim startImageURL As String = CurrentRequest.CurrentItem.URL
+          Dim isPopup As Boolean = Me.Parent.TemplateControl.AppRelativeVirtualPath.EndsWith("aspx")
 
-                    Do
-                        image = CurrentRequest.CurrentItem
-                        sb.Append("Pic[")
-                        sb.Append(count)
-                        sb.Append("] = """)
-                        sb.Append(image.URL)
-                        sb.Append("""")
-                        sb.Append(vbCrLf)
-                        sb.Append("Title[")
-                        sb.Append(count)
-                        sb.Append("] = """)
-                        sb.Append(JSEncode(image.Title.Replace(vbCrLf, "<br />")))
-                        sb.Append("""")
-                        sb.Append(vbCrLf)
-                        sb.Append("Description[")
-                        sb.Append(count)
-                        sb.Append("] = """)
-                        sb.Append(JSEncode(image.Description.Replace(vbCrLf, "<br />")))
-                        sb.Append("""")
-                        sb.Append(vbCrLf)
-                        'If startImageURL Is Nothing Then
-                        '    startImageURL = image.URL
-                        'End If
-                        count += 1
-                        CurrentRequest.MoveNext()
-                    Loop Until CurrentRequest.CurrentItemNumber = startItemNumber
-                    sb.Append("var t")
-                    sb.Append(vbCrLf)
-                    sb.Append("var j = 0")
-                    sb.Append(vbCrLf)
-                    sb.Append("var p = Pic.length")
-                    sb.Append(vbCrLf)
-                    sb.Append("var preLoad = new Array()")
-                    sb.Append(vbCrLf)
-                    sb.Append("for (i = 0; i < p; i++){")
-                    sb.Append(vbCrLf)
-                    sb.Append("preLoad[i] = new Image()")
-                    sb.Append(vbCrLf)
-                    sb.Append("preLoad[i].src = Pic[i]")
-                    sb.Append(vbCrLf)
-                    sb.Append("}")
-                    sb.Append(vbCrLf)
-                    sb.Append("runSlideShow();")
-                    sb.Append(vbCrLf)
-                    sb.Append("</script>")
+          If isPopup Then
+            DotNetNuke.Framework.jQuery.RegisterScript(Page)
+          Else
+            DotNetNuke.Framework.jQuery.RequestRegistration()
+          End If
 
-                    ' Set the start image as the first valid image
-                    'Dim StartImage As String
-                    'StartImage = CType(CurrentRequest.ValidImages(0), GalleryFile).URL
-                    ' JIMJ wrap src in extra "'s
-                    ImageSrc.Text = "<img src=""" & startImageURL & """ name='SlideShow' alt='' class='Gallery_Image'/>" 'style='border-color:#D1D7DC;border-width:2px;border-style:Outset;'>"
+          Dim sb As New StringBuilder
 
-                    'WES - Use ClientScript.RegisterStartupScript rather than injecting script via label
-                    'as use of <body onload = "runSlideShow();"> in markup results in second body tag when slide show
-                    'is configured to run in page rather than popup. Fix for Gemini issue GAL-8110
-                    'NOTE: This javascript and others do not inject clientID so that more than one module may be
-                    'placed on the same page.
+          sb.Append("    var baseTitle = '")
+          If isPopup Then
+            sb.Append(CType(Me.Parent.TemplateControl, GalleryPageBase).Title)
+          Else
+            sb.Append(CType(Me.Page, CDefault).Title)
+          End If
+          sb.AppendLine("';")
 
-                    Page.ClientScript.RegisterStartupScript(Me.GetType, "SlideShow", sb.ToString)
-                Else
-                    ErrorMessage.Visible = True
-                    'WES - localized album empty message
-                    ErrorMessage.Text = Localization.GetString("AlbumEmpty", GalleryConfig.SharedResourceFile) 'Album contains no images!
-                End If
-            End If
-        End Sub
-    End Class
+          ' Write all of the image data out
+          Dim image As GalleryFile
+          Dim count As Integer
+          Dim startItemNumber As Integer = CurrentRequest.CurrentItemNumber
+          Dim totalItemCount As Integer = CurrentRequest.BrowsableItems.Count
+          Dim startImageURL As String = CurrentRequest.CurrentItem.URL
+          sb.Append("    jQuery('#")
+          sb.Append(celPicture.ClientID)
+          sb.Append("').data('pics', [")
+          Do
+            image = CurrentRequest.CurrentItem
+            AppendPicData(sb, count, image)
+            count += 1
+            CurrentRequest.MoveNext()
+          Loop Until CurrentRequest.CurrentItemNumber = startItemNumber
+          sb.Remove(sb.Length - 3, 3) ' remove trailing command and vbCrlf characters
+          sb.AppendLine("]);")
+          sb.Append("    runSlideShow(0, ")
+          sb.Append(slideSpeed.ToString)
+          sb.AppendLine(", 500);")
+
+          Page.ClientScript.RegisterStartupScript(Me.GetType, ClientID & "_SlideShow", sb.ToString, True)
+        Else
+          ErrorMessage.Visible = True
+          'WES - localized album empty message
+          ErrorMessage.Text = Localization.GetString("AlbumEmpty", GalleryConfig.SharedResourceFile) 'Album contains no images!
+        End If
+      End If
+    End Sub
+
+    Private Sub AppendPicData(ByVal sb As StringBuilder, ByVal i As Integer, ByVal data As GalleryFile)
+      With sb
+        .Append("{src:'")
+        sb.Append(JSEncode(data.URL))
+        sb.Append("', title:'")
+        sb.Append(JSEncode(data.Title.Replace(vbCrLf, "<br />")))
+        sb.Append("', desc:'")
+        sb.Append(JSEncode(data.Description.Replace(vbCrLf, "<br />")))
+        sb.AppendLine("'},")
+      End With
+    End Sub
+  End Class
 
 End Namespace

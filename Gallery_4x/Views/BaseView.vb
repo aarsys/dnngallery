@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -34,135 +34,101 @@ Imports DotNetNuke.Modules.Gallery.Utils
 
 Namespace DotNetNuke.Modules.Gallery.Views
 
-    ''' <summary>
-    ''' Base object used by various gallery view code
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Class BaseView
+  ''' <summary>
+  ''' Base object used by various gallery view code
+  ''' </summary>
+  ''' <remarks></remarks>
+  Public Class BaseView
 
-        Private mGalleryControl As GalleryControl
+    Private mGalleryControl As GalleryControl
 
-        Public Sub New(ByVal GalleryControl As GalleryControl)
-            mGalleryControl = GalleryControl
-        End Sub 'New
+    Public Sub New(ByVal GalleryControl As GalleryControl)
+      mGalleryControl = GalleryControl
+    End Sub 'New
 
-        Public ReadOnly Property GalleryControl() As GalleryControl
-            Get
-                Return mGalleryControl
-            End Get
-        End Property
+    Public ReadOnly Property GalleryControl() As GalleryControl
+      Get
+        Return mGalleryControl
+      End Get
+    End Property
 
-        Public ReadOnly Property Controls() As ControlCollection
-            Get
-                Return mGalleryControl.Controls
-            End Get
-        End Property
+    Public ReadOnly Property Controls() As ControlCollection
+      Get
+        Return mGalleryControl.Controls
+      End Get
+    End Property
 
-        Public Overridable Sub CreateChildControls()
-        End Sub 'CreateChildControls
+    Public Overridable Sub CreateChildControls()
+    End Sub 'CreateChildControls
 
-        Public Overridable Sub OnPreRender()
-        End Sub 'OnPreRender
+    Public Overridable Sub OnPreRender()
+    End Sub 'OnPreRender
 
-        Public Overridable Sub Render(ByVal wr As HtmlTextWriter)
-        End Sub 'Render
+    Public Overridable Sub Render(ByVal wr As HtmlTextWriter)
+    End Sub 'Render
 
-        Protected Sub RenderTableBegin(ByVal wr As HtmlTextWriter, ByVal cellspacing As Integer, ByVal cellpadding As Integer, ByVal BorderWidth As Integer) ' Begin table in which we will render object
-            Dim borderValue As String = String.Empty
-            Dim cellpaddingValue As String = String.Empty
-            Dim cellspacingValue As String = String.Empty
+    Protected Sub RenderTableBegin(ByVal wr As HtmlTextWriter, ByVal ClassName As String) ' Begin table in which we will render object (cellspacing, cellpadding, borderwidth)
 
-            'If (mGalleryControl.BorderStyle <> BorderStyle.None) Then
-            wr.AddAttribute(HtmlTextWriterAttribute.Class, "Border")
-            wr.AddAttribute(HtmlTextWriterAttribute.Align, "left")
-            If BorderWidth > 0 Then
-                borderValue = BorderWidth.ToString + "px"
-                wr.AddAttribute(HtmlTextWriterAttribute.Border, borderValue)
-            End If
-            'wr.AddAttribute(HtmlTextWriterAttribute.Bordercolor, "white")
-            cellspacingValue = cellspacing.ToString + "px"
-            cellpaddingValue = cellpadding.ToString
-            wr.AddAttribute(HtmlTextWriterAttribute.Cellspacing, cellspacingValue)
-            wr.AddAttribute(HtmlTextWriterAttribute.Cellpadding, cellpaddingValue)
-            wr.AddAttribute(HtmlTextWriterAttribute.Width, "100%")
-            wr.AddAttribute(HtmlTextWriterAttribute.Id, "GalleryContent")
-            wr.RenderBeginTag(HtmlTextWriterTag.Table)
-            'End If
-        End Sub 'RenderTableBegin
+      wr.AddAttribute(HtmlTextWriterAttribute.Class, ClassName)
+      wr.AddAttribute(HtmlTextWriterAttribute.Id, "GalleryContent")
+      wr.RenderBeginTag(HtmlTextWriterTag.Table)
+    End Sub 'RenderTableBegin
 
-        Protected Sub RenderTableEnd(ByVal wr As HtmlTextWriter)
-            wr.RenderEndTag()
-        End Sub ' End table in which object was rendered
+    Protected Sub RenderTableEnd(ByVal wr As HtmlTextWriter)
+      wr.RenderEndTag()
+    End Sub ' End table in which object was rendered
 
-        Protected Sub RenderInfo(ByVal wr As HtmlTextWriter, ByVal Info As String)
-            wr.RenderBeginTag(HtmlTextWriterTag.Tr)
-            wr.AddAttribute(HtmlTextWriterAttribute.Align, "center")
-            wr.AddAttribute(HtmlTextWriterAttribute.Valign, "middle")
-            wr.AddAttribute(HtmlTextWriterAttribute.Width, "100%")
-            wr.AddAttribute(HtmlTextWriterAttribute.Height, "50px")
-            wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_Row")
-            wr.RenderBeginTag(HtmlTextWriterTag.Td)
+    Protected Sub RenderInfo(ByVal wr As HtmlTextWriter, ByVal Info As String)
+      wr.RenderBeginTag(HtmlTextWriterTag.Tr)
 
-            wr.Write(Info)
+      wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_AlbumEmpty")
+      wr.RenderBeginTag(HtmlTextWriterTag.Td)
+      wr.Write(Info)
+      wr.RenderEndTag() ' </td>
 
-            wr.RenderEndTag() ' td thumb
-            wr.RenderEndTag() ' tr thumb
-        End Sub
+      wr.RenderEndTag() ' </tr>
+    End Sub
 
-        Public Shared Sub RenderImage(ByVal wr As HtmlTextWriter, ByVal ImageURL As String, ByVal Tooltip As String, ByVal Css As String)
-            wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
-            wr.AddAttribute(HtmlTextWriterAttribute.Src, ImageURL)
+    Public Shared Sub RenderImage(ByVal wr As HtmlTextWriter, ByVal ImageURL As String, ByVal Tooltip As String, ByVal Css As String)
+      wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
+      wr.AddAttribute(HtmlTextWriterAttribute.Src, ImageURL)
 
-            If Css.Length > 0 Then
-                wr.AddAttribute(HtmlTextWriterAttribute.Class, Css)
-            End If
+      If Css.Length > 0 Then
+        wr.AddAttribute(HtmlTextWriterAttribute.Class, Css)
+      End If
 
-            'xhtml requires an alt tag, even if it is empty - HWZassenhaus 9/28/2008
-            If Tooltip.Length > 0 Then
-                wr.AddAttribute(HtmlTextWriterAttribute.Alt, Tooltip)
-            Else
-                wr.AddAttribute(HtmlTextWriterAttribute.Alt, "")
-            End If
+      'xhtml requires an alt tag, even if it is empty - HWZassenhaus 9/28/2008
+      If Tooltip.Length > 0 Then
+        wr.AddAttribute(HtmlTextWriterAttribute.Title, Tooltip)
+        wr.AddAttribute(HtmlTextWriterAttribute.Alt, Tooltip)
+      Else
+        wr.AddAttribute(HtmlTextWriterAttribute.Alt, "")
+      End If
 
-            wr.RenderBeginTag(HtmlTextWriterTag.Img) ' img thumbs
-            wr.RenderEndTag() ' img thumb
+      wr.RenderBeginTag(HtmlTextWriterTag.Img) '<img>
+      wr.RenderEndTag() '/>'
 
-        End Sub
+    End Sub
 
-        Public Shared Sub RenderImageButton(ByVal wr As HtmlTextWriter, ByVal URL As String, ByVal ImageURL As String, ByVal Tooltip As String, ByVal Css As String)
-            wr.AddAttribute(HtmlTextWriterAttribute.Href, URL.Replace("~/", ""))
-            wr.RenderBeginTag(HtmlTextWriterTag.A)
-            wr.AddAttribute(HtmlTextWriterAttribute.Border, "0")
-            wr.AddAttribute(HtmlTextWriterAttribute.Src, ImageURL)
+    Public Shared Sub RenderImageButton(ByVal wr As HtmlTextWriter, ByVal URL As String, ByVal ImageURL As String, ByVal Tooltip As String, ByVal Css As String)
+      wr.AddAttribute(HtmlTextWriterAttribute.Href, URL.Replace("~/", ""))
+      wr.RenderBeginTag(HtmlTextWriterTag.A)
+      RenderImage(wr, ImageURL, Tooltip, Css)
+      wr.RenderEndTag() '</a>
+    End Sub
 
-            If Css.Length > 0 Then
-                wr.AddAttribute(HtmlTextWriterAttribute.Class, Css)
-            End If
+    Public Shared Sub RenderCommandButton(ByVal wr As HtmlTextWriter, ByVal URL As String, ByVal Text As String, ByVal Css As String)
+      wr.AddAttribute(HtmlTextWriterAttribute.Href, URL.Replace("~/", ""))
 
-            If Tooltip.Length > 0 Then
-                wr.AddAttribute(HtmlTextWriterAttribute.Alt, Tooltip)
-            Else
-                'xhtml requirement for alt tag, even if empty - GAL8522
-                wr.AddAttribute(HtmlTextWriterAttribute.Alt, "")
-            End If
+      If Css.Length > 0 Then
+        wr.AddAttribute(HtmlTextWriterAttribute.Class, Css)
+      End If
 
-            wr.RenderBeginTag(HtmlTextWriterTag.Img) ' img thumbs
-            wr.RenderEndTag() ' img thumb
-            wr.RenderEndTag() ' A
-        End Sub
+      wr.RenderBeginTag(HtmlTextWriterTag.A)
+      wr.Write(Text)
+      wr.RenderEndTag() '</a>
+    End Sub
 
-        Public Shared Sub RenderCommandButton(ByVal wr As HtmlTextWriter, ByVal URL As String, ByVal Text As String, ByVal Css As String)
-            wr.AddAttribute(HtmlTextWriterAttribute.Href, URL.Replace("~/", ""))
-
-            If Css.Length > 0 Then
-                wr.AddAttribute(HtmlTextWriterAttribute.Class, Css)
-            End If
-
-            wr.RenderBeginTag(HtmlTextWriterTag.A)
-            wr.Write(Text)
-            wr.RenderEndTag() ' A
-        End Sub
-
-    End Class
+  End Class
 
 End Namespace

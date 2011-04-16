@@ -3,4 +3,10 @@ Dotnetnuke.Modules.Gallery_DES.vbproj.user
 _sgbak
 bin
 obj
+</Value></Property><Property><Name>svn:ignore</Name><Value>Dotnetnuke.Modules.Gallery.vbproj.user
+Dotnetnuke.Modules.Gallery_DES.vbproj.user
+_packages
+_sgbak
+bin
+obj
 </Value></Property></Properties></ItemProperties>

@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -24,7 +24,7 @@ Imports System
 Namespace DotNetNuke.Modules.Gallery
 
     Public Class GalleryObjectCollection
-        Inherits Collections.CollectionBase
+    Inherits System.Collections.CollectionBase
 
         ' Allows access to items by key AND index
         ' WES changed to case insensitive hashtable key comparisons following issues resulting from forced lowercasing of url
