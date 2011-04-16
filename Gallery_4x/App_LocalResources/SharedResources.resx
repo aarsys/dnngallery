@@ -172,7 +172,7 @@
     <value>[VoteValue] out of 5 stars, based on [VoteCount] visitors</value>
   </data>
   <data name="AlbumSizeInfo.Text" xml:space="preserve">
-    <value>([ItemCount] items)</value>
+    <value>([ItemCount]&amp;nbsp;items)</value>
   </data>
   <data name="FileSizeInfo.Text" xml:space="preserve">
     <value>([FileSize] KB)</value>

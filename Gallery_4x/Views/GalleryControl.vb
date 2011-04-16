@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -62,9 +62,12 @@ Namespace DotNetNuke.Modules.Gallery.Views
             mInitialised = True
         End Sub 'Initialise
 
-        Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
-            Initialise()
-        End Sub 'OnLoad
+    Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
+      If View = GalleryView.ListView Then
+        DotNetNuke.Framework.jQuery.RequestRegistration()
+      End If
+      Initialise()
+    End Sub 'OnLoad
 
         Protected Overrides Sub EnsureChildControls()
             If Not mInitialised Then

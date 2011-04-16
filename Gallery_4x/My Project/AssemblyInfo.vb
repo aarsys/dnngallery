@@ -1,6 +1,6 @@
 '
 ' DotNetNuke? - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -18,6 +18,7 @@
 ' DEALINGS IN THE SOFTWARE.
 '
 
+Imports System
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -26,14 +27,17 @@ Imports System.Runtime.InteropServices
 ' associated with an assembly.
 
 ' Review the values of the assembly attributes
-
 <Assembly: AssemblyTitle("DotNetNuke.Modules.Gallery")> 
 <Assembly: AssemblyDescription("ASP.NET Open Source Portal Application")> 
-<Assembly: AssemblyCompany("Dotnetnuke Corp.")> 
+<Assembly: AssemblyCompany("Dotnetnuke Corporation")> 
 <Assembly: AssemblyProduct("http://www.dotnetnuke.com")> 
-<Assembly: AssemblyCopyright("Portal engine source code is copyright 2002-2010 by DotNetNuke Corp. All Rights Reserved")> 
-<Assembly: AssemblyTrademark("DotNetNuke")> 
-<Assembly: CLSCompliant(True)> 
+<Assembly: AssemblyCopyright("Portal engine source code is copyright 2002-2011 by DotNetNuke Corp. All Rights Reserved")> 
+<Assembly: AssemblyTrademark("DotNetNuke")>  
+
+<Assembly: ComVisible(False)>
+
+'The following GUID is for the ID of the typelib if this project is exposed to COM
+<Assembly: Guid("9d20a03f-ceb1-418c-b665-f76b6e1950d8")> 
 
 ' Version information for an assembly consists of the following four values:
 '
@@ -45,6 +49,5 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("04.03.03.02")> 
-<Assembly: ComVisibleAttribute(False)> 
-<Assembly: AssemblyFileVersionAttribute("4.3.3.0")> 
+<Assembly: AssemblyVersion("04.04.00.01")> 
+<Assembly: AssemblyFileVersion("4.4.*.*")> 

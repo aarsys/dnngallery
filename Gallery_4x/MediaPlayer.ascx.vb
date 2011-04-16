@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -81,8 +81,6 @@ Namespace DotNetNuke.Modules.Gallery
             End If
 
             mGalleryConfig = Config.GetGalleryConfig(mModuleID)
-            'mediaRequest = New GalleryMediaRequest(mModuleID)
-            'lblTitle.Text = mediaRequest.CurrentItem.Title
 
             ErrorMessage.Visible = False
 
@@ -91,16 +89,6 @@ Namespace DotNetNuke.Modules.Gallery
             End If
 
         End Sub
-
-        'Public Function MovieURL() As String
-        '    Try
-        '        Return mediaRequest.CurrentItem.URL
-        '    Catch Exc As System.Exception
-        '        ErrorMessage.Text = Exc.Message
-        '        ErrorMessage.Visible = True
-        '        Return ""
-        '    End Try
-        'End Function
 
         Private Sub btnBack_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBack.Click
             Dim url As String
@@ -118,7 +106,25 @@ Namespace DotNetNuke.Modules.Gallery
             End Get
         End Property
 
-    End Class
+    Public Property Title As String
+      Get
+        Return lblTitle.Text
+      End Get
+      Set(value As String)
+        lblTitle.Text = value
+      End Set
+    End Property
+
+    Public Property ViewControlWidth As Unit
+      Get
+        Return New Unit(tblViewControl.Style("width"))
+      End Get
+      Set(value As Unit)
+        tblViewControl.Style.Add("width", value.ToString())
+      End Set
+    End Property
+  End Class
+
 End Namespace
 
 

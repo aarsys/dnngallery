@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -31,43 +31,36 @@ Imports DotNetNuke.Modules.Gallery.Utils
 
 Namespace DotNetNuke.Modules.Gallery.Views
 
-    Public Class NoConfigView
-        Inherits BaseView
+  Public Class NoConfigView
+    Inherits BaseView
 
-        Public Sub New(ByVal GalleryCont As GalleryControl)
-            MyBase.New(GalleryCont)
-        End Sub
+    Public Sub New(ByVal GalleryCont As GalleryControl)
+      MyBase.New(GalleryCont)
+    End Sub
 
-        Public Overrides Sub CreateChildControls()
-        End Sub
+    Public Overrides Sub CreateChildControls()
+    End Sub
 
-        Public Overrides Sub OnPreRender()
-        End Sub
+    Public Overrides Sub OnPreRender()
+    End Sub
 
-        Private Sub RenderGallery(ByVal wr As HtmlTextWriter)
-            wr.RenderBeginTag(HtmlTextWriterTag.Tr) ' <tr 
+    Private Sub RenderGallery(ByVal wr As HtmlTextWriter)
+      wr.RenderBeginTag(HtmlTextWriterTag.Tr) ' <tr>
 
-            wr.AddAttribute(HtmlTextWriterAttribute.Align, "center")
-            wr.AddAttribute(HtmlTextWriterAttribute.Valign, "middle")
-            wr.AddAttribute(HtmlTextWriterAttribute.Height, "100px")
-            wr.AddAttribute(HtmlTextWriterAttribute.Class, "Gallery_Row")
-            wr.RenderBeginTag(HtmlTextWriterTag.Td)
+      wr.AddAttribute(HtmlTextWriterAttribute.Class, "NormalRed Gallery_Error")
+      wr.RenderBeginTag(HtmlTextWriterTag.Td)
+      wr.Write(GalleryControl.LocalizedText("NoConfiguration"))
 
-            wr.AddAttribute(HtmlTextWriterAttribute.Class, "NormalRed")
-            wr.AddAttribute(HtmlTextWriterAttribute.Id, "spInfo")
-            wr.RenderBeginTag(HtmlTextWriterTag.Span)
-            wr.Write(GalleryControl.LocalizedText("NoConfiguration"))
-            wr.RenderEndTag() ' </span>
-            wr.RenderEndTag() ' </td>
-            wr.RenderEndTag() ' </tr>
-        End Sub
+      wr.RenderEndTag() ' </td>
+      wr.RenderEndTag() ' </tr>
+    End Sub
 
-        Public Overrides Sub Render(ByVal wr As HtmlTextWriter)
-            RenderTableBegin(wr, 1, 0, 0)
-            RenderGallery(wr)
-            RenderTableEnd(wr)
-        End Sub
+    Public Overrides Sub Render(ByVal wr As HtmlTextWriter)
+      RenderTableBegin(wr, "Gallery_Content")
+      RenderGallery(wr)
+      RenderTableEnd(wr)
+    End Sub
 
-    End Class
+  End Class
 
 End Namespace

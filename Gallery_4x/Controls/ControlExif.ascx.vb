@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -28,115 +28,143 @@ Imports Gallery.Exif
 
 Namespace DotNetNuke.Modules.Gallery.WebControls
 
-    Public Class Exif
-        Inherits GalleryWebControlBase
+  Public Class Exif
+    Inherits GalleryWebControlBase
 
 #Region "Private Members"
-        Private _CurrentRequest As GalleryViewerRequest = Nothing
+    Private _CurrentRequest As GalleryViewerRequest = Nothing
 
-        '/ <summary>An instance of the PhotoProperties class</summary>
-        Private mPhotoProps As PhotoProperties
-        '/ <summary>Has the PhotoProperties instance successfully initialized?</summary>
-        Private mPhotoPropsInitialized As Boolean
-        Private mIsAnalysisSuccessful As Boolean
-        Private mPhotoPath As String = ""
-        Private mCurrentItem As GalleryFile
+    '/ <summary>An instance of the PhotoProperties class</summary>
+    Private mPhotoProps As PhotoProperties
+    '/ <summary>Has the PhotoProperties instance successfully initialized?</summary>
+    Private mPhotoPropsInitialized As Boolean
+    Private mIsAnalysisSuccessful As Boolean
+    Private mPhotoPath As String = ""
+    Private mCurrentItem As GalleryFile
 #End Region
 
 #Region "Public Properties"
-        Public Property CurrentRequest() As GalleryViewerRequest
-            Get
-                Return _CurrentRequest
-            End Get
-            Set(ByVal value As GalleryViewerRequest)
-                _CurrentRequest = value
-            End Set
-        End Property
+    Public Property CurrentRequest() As GalleryViewerRequest
+      Get
+        Return _CurrentRequest
+      End Get
+      Set(ByVal value As GalleryViewerRequest)
+        _CurrentRequest = value
+      End Set
+    End Property
 #End Region
 
 #Region "Private Methods"
-        Protected Function ExifHelp(ByVal tagDatumName As String) As String
-            Return Localization.GetString(tagDatumName & ".Help", Me.LocalResourceFile)
-        End Function
+    Protected Function ExifHelp(ByVal tagDatumName As String) As String
+      Return Localization.GetString(tagDatumName & ".Help", Me.LocalResourceFile)
+    End Function
 
-        Protected Function ExifText(ByVal tagDatumName As String) As String
-            Return Localization.GetString(tagDatumName & ".Text", Me.LocalResourceFile)
-        End Function
+    Protected Function ExifText(ByVal tagDatumName As String) As String
+      Return Localization.GetString(tagDatumName & ".Text", Me.LocalResourceFile)
+    End Function
 
-        Private Sub BindList()
-            Services.Localization.Localization.LocalizeDataGrid(grdExif, Me.LocalResourceFile)
-            grdExif.DataSource = mPhotoProps.PhotoMetaData
-            grdExif.DataBind()
-        End Sub
+    Private Sub BindList()
+      Services.Localization.Localization.LocalizeDataGrid(grdExif, Me.LocalResourceFile)
+      grdExif.DataSource = mPhotoProps.PhotoMetaData
+      grdExif.DataBind()
+    End Sub
 
-        '/ <summary>
-        '/ Initializes the PhotoProperties tag properties using asynchronous 
-        '/ method invocation of the initialization.</summary>
-        Private Sub InitializePhotoProperties(ByVal initXmlFile As String)
-            ' Create an instance of the PhotoProperties
-            mPhotoProps = New PhotoProperties
-            mPhotoPropsInitialized = mPhotoProps.Initialize(initXmlFile)
+    '/ <summary>
+    '/ Initializes the PhotoProperties tag properties using asynchronous 
+    '/ method invocation of the initialization.</summary>
+    Private Sub InitializePhotoProperties(ByVal initXmlFile As String)
+      ' Create an instance of the PhotoProperties
+      mPhotoProps = New PhotoProperties
+      mPhotoPropsInitialized = mPhotoProps.Initialize(initXmlFile)
 
-        End Sub 'InitializePhotoProperties
+    End Sub 'InitializePhotoProperties
 
-        Private Function AnalyzeImageFile(ByVal fileName As String) As Boolean
-            Dim isAnalyzed As Boolean = False
-            Try
-                mPhotoProps.Analyze(fileName)
-                isAnalyzed = True
-            Catch ex As InvalidOperationException
-            End Try
-            Return isAnalyzed
-        End Function 'AnalyzeImageFile
+    Private Function AnalyzeImageFile(ByVal fileName As String) As Boolean
+      Dim isAnalyzed As Boolean = False
+      Try
+        mPhotoProps.Analyze(fileName)
+        isAnalyzed = True
+      Catch ex As InvalidOperationException
+      End Try
+      Return isAnalyzed
+    End Function 'AnalyzeImageFile
 
-        Private Sub InitExifData()
-            Dim xmlFile As String = IO.Path.Combine(Server.MapPath(GalleryConfig.SourceDirectory & "/Resources"), "_photoMetadata.xml")
-            InitializePhotoProperties(xmlFile)
+    Private Sub InitExifData()
+      Dim xmlFile As String = IO.Path.Combine(Server.MapPath(GalleryConfig.SourceDirectory & "/Resources"), "_photoMetadata.xml")
+      InitializePhotoProperties(xmlFile)
 
-            mIsAnalysisSuccessful = AnalyzeImageFile(mPhotoPath)
-            If mIsAnalysisSuccessful Then
-                BindList()
-            End If
+      mIsAnalysisSuccessful = AnalyzeImageFile(mPhotoPath)
+      If mIsAnalysisSuccessful Then
+        BindList()
+      End If
 
-        End Sub
+    End Sub
 #End Region
 
 #Region "Event Handlers"
-        Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-            CurrentRequest = New GalleryViewerRequest(ModuleId)
-            mCurrentItem = CurrentRequest.CurrentItem
-            mPhotoPath = mCurrentItem.SourcePath
+    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+      CurrentRequest = New GalleryViewerRequest(ModuleId)
+      mCurrentItem = CurrentRequest.CurrentItem
+      mPhotoPath = mCurrentItem.SourcePath
 
-            If Not IO.File.Exists(mPhotoPath) Then
-                mPhotoPath = mCurrentItem.Path
-            End If
+      If Not IO.File.Exists(mPhotoPath) Then
+        mPhotoPath = mCurrentItem.Path
+      End If
 
-            InitExifData()
-            Title.Text = CurrentRequest.CurrentItem.Title.Replace(vbCrLf, "<br />")
-            imgExif.ImageUrl = mCurrentItem.ThumbnailURL
-        End Sub
+      InitExifData()
+      Dim isPopup As Boolean = Me.Parent.TemplateControl.AppRelativeVirtualPath.EndsWith("aspx")
+
+      If isPopup Then
+        Dim GalleryPage As GalleryPageBase = CType(Me.Parent.TemplateControl, GalleryPageBase)
+        With GalleryPage
+          .Title = GalleryPage.Title & " > " & CurrentRequest.CurrentItem.Title
+          .ControlTitle = CurrentRequest.CurrentItem.Title
+        End With
+      Else
+        Dim SitePage As CDefault = CType(Me.Page, CDefault)
+        SitePage.Title = SitePage.Title & " > " & CurrentRequest.CurrentItem.Title
+        Dim namingContainer As Gallery.ExifMetaData = CType(Me.NamingContainer, Gallery.ExifMetaData)
+        With namingContainer
+          .Title = CurrentRequest.CurrentItem.Title
+        End With
+      End If
+      imgExif.ImageUrl = mCurrentItem.ThumbnailURL
+      litInfo.Text = "<span>" & CurrentRequest.CurrentItem.ItemInfo & "</span>"
+      litDescription.Text = "<p class=""Gallery_Description"">" & CurrentRequest.CurrentItem.Description & "</p>"
+    End Sub
+
+    Private Sub grdExif_ItemDataBound(sender As Object, e As System.Web.UI.WebControls.DataGridItemEventArgs) Handles grdExif.ItemDataBound
+      If e.Item.ItemType = ListItemType.Item Or e.Item.ItemType = ListItemType.AlternatingItem Then
+        Dim dataItem As PhotoTagDatum = DirectCast(e.Item.DataItem, PhotoTagDatum)
+        If dataItem IsNot Nothing AndAlso dataItem.Id = 37500 Then
+          'Remove MakerNote Tag (ID=37500) as it can cantain thousands of Hex values which are propriatary to the camera maker and often encrypted
+          'Including the MakerNote Tag value in the grid causes a several minute delay before the grid is rendered with some photo images
+          e.Item.Cells(3).Text = "&nbsp;"
+        End If
+      End If
+    End Sub
 #End Region
 
 #Region " Web Form Designer Generated Code "
 
-        'This call is required by the Web Form Designer.
-        <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+    'This call is required by the Web Form Designer.
+    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
 
-        End Sub
+    End Sub
 
 
-        'NOTE: The following placeholder declaration is required by the Web Form Designer.
-        'Do not delete or move it.
-        Private designerPlaceholderDeclaration As System.Object
+    'NOTE: The following placeholder declaration is required by the Web Form Designer.
+    'Do not delete or move it.
+    Private designerPlaceholderDeclaration As System.Object
 
-        Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
-            'CODEGEN: This method call is required by the Web Form Designer
-            'Do not modify it using the code editor.
-            InitializeComponent()
-        End Sub
+    Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
+      'CODEGEN: This method call is required by the Web Form Designer
+      'Do not modify it using the code editor.
+      InitializeComponent()
+    End Sub
 
 #End Region
 
-    End Class
+  End Class
 
 End Namespace

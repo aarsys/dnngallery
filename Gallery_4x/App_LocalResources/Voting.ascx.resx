@@ -121,7 +121,7 @@
     <value>Author:</value>
   </data>
   <data name="btnAddVote.Text" xml:space="preserve">
-    <value>Add Vote</value>
+    <value>Vote Now!</value>
   </data>
   <data name="cmdUpdate.Text" xml:space="preserve">
     <value>Record Your Vote</value>
@@ -167,5 +167,11 @@
   </data>
   <data name="Your_Rating.Text" xml:space="preserve">
     <value>Your Rating:</value>
+  </data>
+  <data name="RatingsAndComments.Text" xml:space="preserve">
+    <value>Ratings and Comments:</value>
+  </data>
+  <data name="Vote.Text" xml:space="preserve">
+    <value>{0} out of {1} stars</value>
   </data>
 </root>

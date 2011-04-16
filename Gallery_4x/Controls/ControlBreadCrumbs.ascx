@@ -2,10 +2,10 @@
 <%@ Import namespace="DotNetNuke.Modules.Gallery" %>
 <asp:Repeater ID="rptFolders" runat="server" >
     <HeaderTemplate>
-        <span style="white-space: nowrap">
+        <span class="Gallery_Breadcrumbs">
     </HeaderTemplate>
     <itemtemplate>
-		<asp:hyperlink id="hlFolder" cssClass="Gallery_HeaderText" runat="server" navigateurl='<%# Ctype(Container.DataItem, FolderDetail).URL %>'>
+		<asp:hyperlink id="hlFolder" CssClass="Gallery_HeaderText" runat="server" Enabled='<%# IsEnabled %>' navigateurl='<%# Ctype(Container.DataItem, FolderDetail).URL %>'>
 			<%# Ctype(Container.DataItem, FolderDetail).Name %>
 		</asp:hyperlink>
 	</itemtemplate>

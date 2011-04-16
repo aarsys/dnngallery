@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -11,44 +11,57 @@
     <RootNamespace>
     </RootNamespace>
     <AssemblyName>Dotnetnuke.Modules.Gallery</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DocumentationFile>Dotnetnuke.Modules.Gallery.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>42029,42031,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DocumentationFile>Dotnetnuke.Gallery.xml</DocumentationFile>
-    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <NoWarn>42029,42031,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>On</OptionStrict>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetNuke, Version=4.9.3.21, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="DotNetNuke, Version=5.6.2.144, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\DotNetNuke.dll</HintPath>
+      <HintPath>..\..\..\_references\05.06.02\DotNetNuke.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DotNetNuke.WebControls, Version=1.5.3.20116, Culture=neutral">
-      <HintPath>..\..\bin\DotNetNuke.WebControls.dll</HintPath>
+    <Reference Include="DotNetNuke.Web, Version=5.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\_references\05.06.02\DotNetNuke.Web.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DotNetNuke.WebUtility, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\DotNetNuke.WebUtility.dll</HintPath>
+    <Reference Include="DotNetNuke.WebControls, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\_references\05.06.02\DotNetNuke.WebControls.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DotNetNuke.WebUtility, Version=4.2.0.185, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\_references\05.06.02\DotNetNuke.WebUtility.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Gallery.Exif, Version=1.0.1890.21041, Culture=neutral">
@@ -56,30 +69,30 @@
       <HintPath>Exif\bin\Gallery.Exif.dll</HintPath>
     </Reference>
     <Reference Include="SharpZipLib, Version=0.81.0.1407, Culture=neutral">
-      <HintPath>..\..\bin\SharpZipLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\_references\05.06.02\SharpZipLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="DotNetNuke" />
     <Import Include="DotNetNuke.Common" />
     <Import Include="DotNetNuke.Common.Utilities" />
     <Import Include="DotNetNuke.Entities" />
-    <Import Include="DotNetNuke.Entities.Tabs" />
     <Import Include="DotNetNuke.Framework" />
-    <Import Include="DotNetNuke.Modules" />
     <Import Include="DotNetNuke.Security" />
     <Import Include="DotNetNuke.Services" />
     <Import Include="DotNetNuke.Services.Exceptions" />
     <Import Include="DotNetNuke.Services.Localization" />
-    <Import Include="DotNetNuke.UI" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -123,11 +136,20 @@
     <Content Include="Controls\ControlPager.ascx" />
     <Content Include="Controls\ControlSlideshow.ascx" />
     <Content Include="Controls\ControlUpload.ascx" />
+    <Content Include="Documentation\DotNetNuke.Modules.Gallery_04.04.00_ReleaseNotes.txt" />
+    <Content Include="Documentation\License.txt" />
+    <Content Include="Documentation\Readme.txt" />
     <Content Include="ExifMetaData.ascx" />
     <Content Include="FileEdit.ascx" />
     <Content Include="FlashPlayer.ascx" />
+    <Content Include="Images\green-ok.gif" />
+    <Content Include="Images\yellow-warning.gif" />
     <Content Include="Maintenance.ascx" />
     <Content Include="MediaPlayer.ascx" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
     <Content Include="Popup\App_LocalResources\PopupSelectMulti.aspx.resx" />
     <Content Include="Popup\App_LocalResources\PopupSelectSingle.aspx.resx" />
     <Content Include="Popup\App_LocalResources\SharedResources.resx" />
@@ -604,6 +626,10 @@
     </Compile>
     <Compile Include="Misc\Authorization.vb" />
     <Compile Include="Misc\Search.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Popup\GalleryPopupControl.vb">
       <SubType>ASPXCodeBehind</SubType>
@@ -612,7 +638,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Popup\GalleryPopupSearch.vb">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Popup\PopupSelectMulti.aspx.designer.vb">
       <DependentUpon>PopupSelectMulti.aspx</DependentUpon>
@@ -682,8 +707,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dotnetnuke.Modules.Gallery.dnn" />
-    <Content Include="Providers\DataProviders\SqlDataProvider\04.03.00.SqlDataProvider" />
+    <Content Include="Dotnetnuke.Modules.Gallery.dnn">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Controls\App_LocalResources\ControlLookup.ascx.resx">
@@ -708,7 +734,7 @@
     <Content Include="App_LocalResources\Voting.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="04.03.00.txt" />
+    <Content Include="04.04.00.txt" />
     <Content Include="Controls\ControlViewer.ascx" />
     <Content Include="GalleryPage.aspx" />
     <Content Include="Image.aspx" />
@@ -808,8 +834,13 @@
     <Content Include="Themes\DNNSimple\Images\s_zoomout.gif" />
     <Content Include="Themes\DotNetNuke\Images\m_Back.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Providers\DataProviders\SqlDataProvider\04.04.00.SqlDataProvider" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\WebApplications\Microsoft.WebApplication.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" Condition="Exists('$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets')" />
+  <Import Project="$(MSBuildProjectDirectory)\Buildfiles\DotNetNuke.Modules.GalleryBuild.targets" />
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
@@ -818,9 +849,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>4825</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/DotNetNuke_2/DesktopModules/Gallery</IISUrl>
+          <IISUrl>http://localhost/Gallery</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost/DotNetNuke_2</IISAppRootUrl>
+          <IISAppRootUrl>http://localhost/DNN5Source</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -830,4 +861,8 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

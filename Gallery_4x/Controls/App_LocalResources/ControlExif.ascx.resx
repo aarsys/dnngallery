@@ -522,8 +522,8 @@
   <data name="Artist.Text" xml:space="preserve">
     <value>Artist</value>
   </data>
-  <data name="CopyRight.Text" xml:space="preserve">
-    <value>CopyRight</value>
+  <data name="Copyright.Text" xml:space="preserve">
+    <value>Copyright</value>
   </data>
   <data name="LuminanceTable.Text" xml:space="preserve">
     <value>LuminanceTable</value>
@@ -1116,7 +1116,7 @@
   <data name="Artist.Help" xml:space="preserve">
     <value>Null-terminated character string that specifies the name of the person who created the thumbnail image.</value>
   </data>
-  <data name="CopyRight.Help" xml:space="preserve">
+  <data name="Copyright.Help" xml:space="preserve">
     <value>Null-terminated character string that contains copyright information for the thumbnail image.</value>
   </data>
   <data name="LuminanceTable.Help" xml:space="preserve">
@@ -1216,7 +1216,7 @@
     <value>Actual focal length, in millimeters, of the lens. Conversion is not made to the focal length of a 35 millimeter film camera.</value>
   </data>
   <data name="MakerNote.Help" xml:space="preserve">
-    <value>Note tag. A tag used by manufacturers of EXIF writers to record information. The contents are up to the manufacturer.</value>
+    <value>Note tag. A tag used by manufacturers of EXIF writers to record information. The contents are up to the manufacturer and are often encrypted. Because of the extremely large size of this field (over 30,000 hexidecimal pairs for some cameras), it will not be displayed in the grid.</value>
   </data>
   <data name="UserComment.Help" xml:space="preserve">
     <value>Comment tag. A tag used by EXIF users to write keywords or comments about the image besides those in ImageDescription and without the character-code limitations of the ImageDescription tag.</value>

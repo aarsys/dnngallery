@@ -124,16 +124,16 @@
     <value>Gallery Home</value>
   </data>
   <data name="plPath.Help" xml:space="preserve">
-    <value>The Path of the gallery usually located in portals/id/Gallery folder (Read Only)</value>
+    <value>The Path of the album usually located in portals/id/Gallery folder.</value>
   </data>
   <data name="plPath.Text" xml:space="preserve">
-    <value>Path:</value>
+    <value>Album Path:</value>
   </data>
   <data name="plName.Text" xml:space="preserve">
-    <value>Name:</value>
+    <value>Album Name:</value>
   </data>
   <data name="plName.Help" xml:space="preserve">
-    <value>Name of the gallery folder.&lt;br /&gt;(Read Only)</value>
+    <value>Name of the gallery album folder.</value>
   </data>
   <data name="plAlbumInfo.Text" xml:space="preserve">
     <value>Album Info:</value>
@@ -144,14 +144,11 @@
   <data name="ControlTitle_maintenance.Text" xml:space="preserve">
     <value>Maintenance</value>
   </data>
-  <data name="btnSyncAll.AlternateText" xml:space="preserve">
-    <value>Synchronize</value>
+  <data name="btnSyncAll.Text" xml:space="preserve">
+    <value>Synchronize All Files</value>
   </data>
-  <data name="btnDeleteAll.AlternateText" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="chkSelectAll.Text" xml:space="preserve">
-    <value>Check All</value>
+  <data name="btnDeleteAll.Text" xml:space="preserve">
+    <value>Delete Selected Files</value>
   </data>
   <data name="GalleryHome.Action" xml:space="preserve">
     <value>Gallery Home</value>
@@ -168,10 +165,10 @@ Viewer image size:&amp;nbsp;[ImageSize]&lt;br /&gt;
 Thumbnail image size:&amp;nbsp;[ThumbSize]</value>
   </data>
   <data name="Album.Header" xml:space="preserve">
-    <value> Image</value>
+    <value> Viewer</value>
   </data>
   <data name="Info.Header" xml:space="preserve">
-    <value>Info</value>
+    <value>File Info</value>
   </data>
   <data name="Name.Header" xml:space="preserve">
     <value>Name</value>
@@ -186,30 +183,45 @@ Thumbnail image size:&amp;nbsp;[ThumbSize]</value>
     <value>Clear Cache</value>
   </data>
   <data name="ModuleHelp.Text" xml:space="preserve">
-    <value>&lt;h1&gt;Gallery Maintenance Help&lt;/h1&gt;&lt;p&gt;With the Gallery Maintenance you can maintenance your Albums&lt;/p&gt;&lt;h1&gt;Features&lt;/h1&gt;&lt;p&gt;&lt;li&gt;Sincronize&lt;/li&gt;&lt;li&gt;Delete Files and albums&lt;/li&gt;&lt;li&gt;Change Album descriptions&lt;/li&gt;&lt;/p&gt;</value>
+    <value>&lt;h1&gt;Gallery Maintenance Help&lt;/h1&gt;&lt;p&gt;With Gallery Maintenance you can maintenain your albums&lt;/p&gt;&lt;h1&gt;Features&lt;/h1&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;Synchronize Files&lt;/li&gt;&lt;li&gt;Delete Files&lt;/li&gt;&lt;li&gt;Rebuild missing source, viewer or thumbnail images&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;</value>
   </data>
   <data name="btnDeleteAll.ToolTip" xml:space="preserve">
-    <value>Delete selected files, including source &amp;amp; thumbnail...</value>
+    <value>Delete selected files, including source and thumbnail </value>
   </data>
   <data name="btnSyncAll.ToolTip" xml:space="preserve">
     <value>Synchronize Gallery display with all files stored on the server</value>
   </data>
-  <data name="checkAll.Text" xml:space="preserve">
+  <data name="btnSelectAll.Text" xml:space="preserve">
     <value>Select All</value>
   </data>
-  <data name="checkAll.ToolTip" xml:space="preserve">
+  <data name="btnSelectAll.ToolTip" xml:space="preserve">
     <value>Use this control to select ALL files shown </value>
   </data>
-  <data name="deselectAll.Text" xml:space="preserve">
+  <data name="btnDeselectAll.Text" xml:space="preserve">
     <value>Deselect All </value>
   </data>
-  <data name="deselectAll.ToolTip" xml:space="preserve">
-    <value>No images have been selected for action</value>
+  <data name="btnDeselectAll.ToolTip" xml:space="preserve">
+    <value>Use this control to deselect ALL files shown</value>
   </data>
   <data name="lnkView.Text" xml:space="preserve">
     <value>View/Edit Image</value>
   </data>
   <data name="Missing.Text" xml:space="preserve">
     <value>Missing</value>
+  </data>
+  <data name="CopyFileToSource.Text" xml:space="preserve">
+    <value>Rebuild source file from viewer file (may result in lower resolution source file)</value>
+  </data>
+  <data name="CopySourceToFile.Text" xml:space="preserve">
+    <value>Rebuild viewer file from source file</value>
+  </data>
+  <data name="Present.Text" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="RebuildThumb.Text" xml:space="preserve">
+    <value>Rebuild thumbnail from source file</value>
+  </data>
+  <data name="Selected.Header" xml:space="preserve">
+    <value>Selected</value>
   </data>
 </root>

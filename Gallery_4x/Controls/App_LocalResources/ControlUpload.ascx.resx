@@ -130,10 +130,10 @@
     <value>Enter the Author of the file.</value>
   </data>
   <data name="plClient.Text" xml:space="preserve">
-    <value>Client:</value>
+    <value>Notes:</value>
   </data>
   <data name="plClient.Help" xml:space="preserve">
-    <value>Enter the name of the client that requested the file.</value>
+    <value>General information field.&lt;br /&gt;&lt;b&gt;Tip&lt;/b&gt;&lt;br /&gt;Can be disabled via gallery configuration.&lt;br /&gt;&lt;b&gt;NOTE&lt;/b&gt;&lt;br /&gt;This field could also be customized by editing localization resx files.</value>
   </data>
   <data name="plLocation.Text" xml:space="preserve">
     <value>Location:</value>

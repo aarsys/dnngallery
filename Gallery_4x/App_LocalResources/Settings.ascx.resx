@@ -387,4 +387,13 @@
   <data name="plEncoderQuality.Text" xml:space="preserve">
     <value>Encoder Quality:</value>
   </data>
+  <data name="plDefaultAlbum.Help" xml:space="preserve">
+    <value>Select the album that should be initially opened when browsing to a page containing the Gallery module.</value>
+  </data>
+  <data name="plDefaultAlbum.Text" xml:space="preserve">
+    <value>Default Album:</value>
+  </data>
+  <data name="RootAlbum.Text" xml:space="preserve">
+    <value>Root Album ({0})</value>
+  </data>
 </root>

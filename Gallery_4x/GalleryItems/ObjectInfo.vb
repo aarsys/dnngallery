@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -61,8 +61,8 @@ Namespace DotNetNuke.Modules.Gallery
         ReadOnly Property DownloadURL() As String
         ReadOnly Property VotingURL() As String
 
-        ReadOnly Property ImageCssClass() As String
-        ReadOnly Property ThumbnailCssClass() As String
+    'ReadOnly Property ImageCssClass() As String
+    'ReadOnly Property ThumbnailCssClass() As String
 
         ReadOnly Property ItemInfo() As String
         ReadOnly Property Size() As Long

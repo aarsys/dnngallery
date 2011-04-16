@@ -1,6 +1,6 @@
 '
 ' DotNetNuke® - http://www.dotnetnuke.com
-' Copyright (c) 2002-2010 by DotNetNuke Corp. 
+' Copyright (c) 2002-2011 by DotNetNuke Corp. 
 
 '
 ' Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
@@ -33,83 +33,99 @@ Imports DotNetNuke.Modules.Gallery.Config
 
 Namespace DotNetNuke.Modules.Gallery
 
-    Public MustInherit Class FlashPlayer
-        Inherits Entities.Modules.PortalModuleBase
-        Implements Entities.Modules.IActionable
+  Public MustInherit Class FlashPlayer
+    Inherits Entities.Modules.PortalModuleBase
+    Implements Entities.Modules.IActionable
 
-        Private mModuleID As Integer
-        Private mGalleryConfig As DotNetNuke.Modules.Gallery.Config
+    Private mModuleID As Integer
+    Private mGalleryConfig As DotNetNuke.Modules.Gallery.Config
 
 #Region " Web Form Designer Generated Code "
 
-        'This call is required by the Web Form Designer.
-        <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+    'This call is required by the Web Form Designer.
+    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
 
-            If mGalleryConfig Is Nothing Then
-                mGalleryConfig = GetGalleryConfig(ModuleId)
-            End If
+      If mGalleryConfig Is Nothing Then
+        mGalleryConfig = GetGalleryConfig(ModuleId)
+      End If
 
-        End Sub
+    End Sub
 
-        Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
-            'CODEGEN: This method call is required by the Web Form Designer
-            'Do not modify it using the code editor.
-            InitializeComponent()
-        End Sub
+    Private Sub Page_Init(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Init
+      'CODEGEN: This method call is required by the Web Form Designer
+      'Do not modify it using the code editor.
+      InitializeComponent()
+    End Sub
 
 #End Region
 
 #Region "Optional Interfaces"
 
-        Public ReadOnly Property ModuleActions() As ModuleActionCollection Implements Entities.Modules.IActionable.ModuleActions
-            Get
-                Dim Actions As New ModuleActionCollection
-                Actions.Add(GetNextActionID, Localization.GetString("Configuration.Action", LocalResourceFile), ModuleActionType.ModuleSettings, "", "edit.gif", EditUrl(ControlKey:="configuration"), "", False, SecurityAccessLevel.Admin, True, False)
-                Actions.Add(GetNextActionID, Localization.GetString("GalleryHome.Action", LocalResourceFile), ModuleActionType.ContentOptions, "", "icon_moduledefinitions_16px.gif", NavigateURL(), False, SecurityAccessLevel.Edit, True, False)
-                Return Actions
-            End Get
-        End Property
+    Public ReadOnly Property ModuleActions() As ModuleActionCollection Implements Entities.Modules.IActionable.ModuleActions
+      Get
+        Dim Actions As New ModuleActionCollection
+        Actions.Add(GetNextActionID, Localization.GetString("Configuration.Action", LocalResourceFile), ModuleActionType.ModuleSettings, "", "edit.gif", EditUrl(ControlKey:="configuration"), "", False, SecurityAccessLevel.Admin, True, False)
+        Actions.Add(GetNextActionID, Localization.GetString("GalleryHome.Action", LocalResourceFile), ModuleActionType.ContentOptions, "", "icon_moduledefinitions_16px.gif", NavigateURL(), False, SecurityAccessLevel.Edit, True, False)
+        Return Actions
+      End Get
+    End Property
 
 #End Region
 
-        Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-            ' Load the styles
-            DirectCast(Page, CDefault).AddStyleSheet(CreateValidID(GalleryConfig.Css()), GalleryConfig.Css())
+      ' Load the styles
+      DirectCast(Page, CDefault).AddStyleSheet(CreateValidID(GalleryConfig.Css()), GalleryConfig.Css())
 
-            If Not Request.QueryString("mid") Is Nothing Then
-                mModuleID = Integer.Parse(Request.QueryString("mid"))
-            End If
+      If Not Request.QueryString("mid") Is Nothing Then
+        mModuleID = Integer.Parse(Request.QueryString("mid"))
+      End If
 
-            mGalleryConfig = Config.GetGalleryConfig(mModuleID)
-            'mediaRequest = New GalleryMediaRequest(mModuleID)
-            'lblTitle.Text = mediaRequest.CurrentItem.Title
+      mGalleryConfig = Config.GetGalleryConfig(mModuleID)
 
-            ErrorMessage.Visible = False
+      ErrorMessage.Visible = False
 
-            If Not Page.IsPostBack AndAlso Not ViewState("UrlReferrer") Is Nothing Then
-                ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
-            End If
+      If Not Page.IsPostBack AndAlso Not ViewState("UrlReferrer") Is Nothing Then
+        ViewState("UrlReferrer") = Request.UrlReferrer.ToString()
+      End If
 
-        End Sub
+    End Sub
 
-        Private Sub btnBack_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBack.Click
-            Dim url As String
-            If Not ViewState("UrlReferrer") Is Nothing Then
-                url = ViewState("UrlReferrer").ToString 'Request.Url.ToString.Replace("&ctl=Viewer", "&ctl=FileEdit")
-            Else
-                url = GetURL(Page.Request.ServerVariables("URL"), Page, "", "ctl=&mode=&mid=&currentitem=&media=")  'Request.Url.ToString.Replace("&ctl=Viewer", "")
-            End If
-            Response.Redirect(url)
-        End Sub
+    Private Sub btnBack_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnBack.Click
+      Dim url As String
+      If Not ViewState("UrlReferrer") Is Nothing Then
+        url = ViewState("UrlReferrer").ToString 'Request.Url.ToString.Replace("&ctl=Viewer", "&ctl=FileEdit")
+      Else
+        url = GetURL(Page.Request.ServerVariables("URL"), Page, "", "ctl=&mode=&mid=&currentitem=&media=")  'Request.Url.ToString.Replace("&ctl=Viewer", "")
+      End If
+      Response.Redirect(url)
+    End Sub
 
-        Public ReadOnly Property GalleryConfig() As DotNetNuke.Modules.Gallery.Config
-            Get
-                Return mGalleryConfig
-            End Get
-        End Property
+    Public ReadOnly Property GalleryConfig() As DotNetNuke.Modules.Gallery.Config
+      Get
+        Return mGalleryConfig
+      End Get
+    End Property
 
-    End Class
+    Public Property Title As String
+      Get
+        Return lblTitle.Text
+      End Get
+      Set(value As String)
+        lblTitle.Text = value
+      End Set
+    End Property
+
+    Public Property ViewControlWidth As Unit
+      Get
+        Return New Unit(tblViewControl.Style("width"))
+      End Get
+      Set(value As Unit)
+        tblViewControl.Style.Add("width", value.ToString())
+      End Set
+    End Property
+
+  End Class
 End Namespace
 
 
